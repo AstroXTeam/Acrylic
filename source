@@ -1107,7 +1107,8 @@ function Library:CreateWindow(setup)
 	end;
 	
 	Library:Tween(MainFrame , Library.TweenLibrary.WindowChanged,{Size = setup.Size})
-	
+	Library:Tween(Ico , Library.TweenLibrary.SmallEffect,{ImageTransparency = 1})
+
 	local WindowLibrary = {};
 	
 	local Block = Instance.new("Frame")
