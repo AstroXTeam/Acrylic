@@ -1,6 +1,6 @@
 # Acrylic
 This UI Library is skid
-
+![Screenshot 2024-10-15 193045](https://github.com/user-attachments/assets/04d94fd1-b5be-4dd0-8ebb-e9bee932e05d)
 ## Create Library
 ```lua
 local Library = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/3345-c-a-t-s-u-s/Acrylic/refs/heads/main/source'))();
@@ -271,6 +271,7 @@ SettingsTab:AddButton({
 ```
 
 # Key System
+![Screenshot 2024-10-15 193017](https://github.com/user-attachments/assets/c9822e0b-2bb7-4261-973e-b5113920a4bf)
 ```lua
 local Window = Library:CreateWindow({
 	Title = 'Acrylic',
