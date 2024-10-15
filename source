@@ -590,7 +590,7 @@ Library.Colors = {
 	Default = Color3.fromRGB(32, 33, 36),
 	Disable = Color3.fromRGB(167, 173, 188),
 	TextColor = Color3.fromRGB(220, 224, 234),
-	
+
 }
 
 function Library.Theme:Default()
@@ -677,18 +677,18 @@ end
 
 function Library.Theme:Random()
 	local RNG = Random.new();
-	
+
 	local Start = function()
 		return RNG:NextNumber(0,255) , RNG:NextNumber(0,255) , RNG:NextNumber(0,255);
 	end;
-	
+
 	Library.Colors = {
 		Hightlight = Color3.fromRGB(Start()),
 		Default = Color3.fromRGB(Start()),
 		Disable = Color3.fromRGB(Start()),
 		TextColor = Color3.fromRGB(Start()),
 	};
-	
+
 	print('Random Theme:',Library.Colors)
 end;
 
@@ -726,19 +726,19 @@ function Library:InputButton(Frame :Frame)
 	Button.TextColor3 = Color3.fromRGB(0, 0, 0)
 	Button.TextSize = 14.000
 	Button.TextTransparency = 1.000	
-	
+
 	return Button;
 end;
 
 function Library:MakeDrop(Frame :Frame , Hover :UIStroke, Color :Color3)
 	local CloneColor = Hover.Color;
-	
+
 	Frame.MouseEnter:Connect(function()
 		Library.TweenService:Create(Hover , TweenInfo.new(0.1), {
 			Color = Color,
 		}):Play();
 	end);
-	
+
 	Frame.MouseLeave:Connect(function()
 		Library.TweenService:Create(Hover , TweenInfo.new(0.1), {
 			Color = CloneColor,
@@ -756,10 +756,10 @@ function Library:Tween(Frame :GuiObject , TweenInfo: TweenInfo , Properties : {}
 		table.foreach(Properties,function(name,value)
 			Frame[name] = value;
 		end)
-		
+
 		return;
 	end;
-	
+
 	local Instance = Library.TweenService:Create(Frame,TweenInfo,Properties);
 	Instance:Play();
 	return Instance
@@ -767,7 +767,7 @@ end;
 
 function Library:CreateWindow(setup)
 	setup = setup or {};
-	
+
 	setup.Title = setup.Title or "Window";
 	setup.Keybind = setup.Keybind or Enum.KeyCode.LeftControl;
 	setup.Size = setup.Size or Library.SizeLibrary.Default;
@@ -775,13 +775,13 @@ function Library:CreateWindow(setup)
 	setup.Logo = setup.Logo or "rbxassetid://7733920644"
 	if setup.KeySystem then
 		setup.KeySystemInfo = setup.KeySystemInfo or {};
-		
+
 		setup.KeySystemInfo.Title = setup.KeySystemInfo.Title or "Key System";
 		setup.KeySystemInfo.OnGetKey = setup.KeySystemInfo.OnGetKey or function() end;
 		setup.KeySystemInfo.OnLogin = setup.KeySystemInfo.OnLogin or function() wait( 0.1) return true end;
-		
+
 	end
-	
+
 	local ScreenGui = Instance.new("ScreenGui")
 	local MainFrame = Instance.new("Frame")
 	local DropShadow = Instance.new("ImageLabel")
@@ -792,7 +792,7 @@ function Library:CreateWindow(setup)
 	ScreenGui.IgnoreGuiInset = false
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 	Library.ProtectGui(ScreenGui);
-	
+
 	MainFrame.Name = "MainFrame"
 	MainFrame.Parent = ScreenGui
 	MainFrame.Active = true
@@ -804,9 +804,9 @@ function Library:CreateWindow(setup)
 	MainFrame.ClipsDescendants = true
 	MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 	MainFrame.Size = UDim2.fromScale(0,0);
-	
+
 	local BlurEle = Library.UIBlur.new(MainFrame,true);
-	
+
 	DropShadow.Name = "DropShadow"
 	DropShadow.Parent = MainFrame
 	DropShadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -835,11 +835,11 @@ function Library:CreateWindow(setup)
 	Ico.SizeConstraint = Enum.SizeConstraint.RelativeYY
 	Ico.Image = setup.Logo
 	Ico.ImageTransparency = 1.000
-	
+
 	Library:Tween(MainFrame , Library.TweenLibrary.SmallEffect,{Size = Library.SizeLibrary.Loading})
 	Library:Tween(Ico , Library.TweenLibrary.SmallEffect,{ImageTransparency = 0.25})
 
-	
+
 	if setup.KeySystem then
 		setup.KeySystemInfo.Enabled = true;
 		setup.KeySystemInfo.Finished = Instance.new('BindableEvent');
@@ -847,9 +847,9 @@ function Library:CreateWindow(setup)
 		task.delay(0.1,function()
 			Library:Tween(Ico , Library.TweenLibrary.SmallEffect,{ImageTransparency = 1})
 		end)
-		
+
 		Library:Tween(MainFrame , Library.TweenLibrary.WindowChanged,{Size = Library.SizeLibrary.Auth})
-		
+
 		local AuthFunction = Instance.new("Frame")
 		local Title = Instance.new("TextLabel")
 		local TextBox = Instance.new("TextBox")
@@ -879,7 +879,7 @@ function Library:CreateWindow(setup)
 		AuthFunction.Size = UDim2.new(1, 0, 1, 0)
 		Library:Tween(AuthFunction , Library.TweenLibrary.SmallEffect,{Position = UDim2.new(0.5, 0, 0.5, 0)})
 
-		
+
 		Title.Name = "Title"
 		Title.Parent = AuthFunction
 		Title.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -1066,53 +1066,53 @@ function Library:CreateWindow(setup)
 		LButton.TextColor3 = Color3.fromRGB(0, 0, 0)
 		LButton.TextSize = 14.000
 		LButton.TextTransparency = 1.000
-		
-		
+
+
 		Library:MakeDrop(GetButton , UIStroke_3 , Library.Colors.Hightlight)
 		Library:MakeDrop(LoginButton , UIStroke_4 , Library.Colors.Hightlight)
 		Library:MakeDrop(TextBox , UIStroke , Library.Colors.Hightlight)
 		setup.KeySystemInfo.CodeId = game:GetService('HttpService'):GenerateGUID(false);
 		setup.KeySystemInfo.AntiSpam = false;
-		
+
 		LButton.MouseButton1Click:Connect(function()
 			if setup.KeySystemInfo.AntiSpam then return end;
 			setup.KeySystemInfo.AntiSpam = true;
 			local verify = setup.KeySystemInfo.OnLogin(TextBox.Text);
-			
+
 			if verify then
 				setup.KeySystemInfo.Finished:Fire(setup.KeySystemInfo.CodeId)
 				return TextBox.Text;
 			end;
-			
+
 			setup.KeySystemInfo.AntiSpam = false;
 			TextBox.Text = "";
 		end)
-		
-		
+
+
 		GButton.MouseButton1Click:Connect(setup.KeySystemInfo.OnGetKey)
-		
+
 		while true do 
 			local this = setup.KeySystemInfo.Finished.Event:Wait();
-			
+
 			if this == setup.KeySystemInfo.CodeId then
 				break;
 			end;
 		end;
-		
+
 		TextBox.TextEditable = false;
-		
+
 		Library:Tween(AuthFunction , Library.TweenLibrary.Normal,{Position = UDim2.new(0.5, 0, 1.5, 0)});
-	
+
 		task.wait(0.5)
 	else
 		repeat task.wait(1.5) until game:IsLoaded();
 	end;
-	
+
 	Library:Tween(MainFrame , Library.TweenLibrary.WindowChanged,{Size = setup.Size})
 	Library:Tween(Ico , Library.TweenLibrary.SmallEffect,{ImageTransparency = 1})
 
 	local WindowLibrary = {};
-	
+
 	local Block = Instance.new("Frame")
 	local Headers = Instance.new("Frame")
 	local Title = Instance.new("TextLabel")
@@ -1132,11 +1132,11 @@ function Library:CreateWindow(setup)
 	local DataScrollingFrame = Instance.new("ScrollingFrame")
 	local UIListLayout_2 = Instance.new("UIListLayout")
 	local TabFrames = Instance.new("Frame")
-	
+
 	UIListLayout_2:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
 		DataScrollingFrame.CanvasSize = UDim2.fromOffset(0,UIListLayout_2.AbsoluteContentSize.Y)
 	end)
-	
+
 	Block.Name = "Block"
 	Block.Parent = MainFrame
 	Block.Active = true
@@ -1147,9 +1147,9 @@ function Library:CreateWindow(setup)
 	Block.BorderSizePixel = 0
 	Block.Position = UDim2.new(-1.5, 0, 0.5, 0)
 	Block.Size = UDim2.new(1, 0, 1, 0)
-	
+
 	Library:Tween(Block , Library.TweenLibrary.WindowChanged,{Position = UDim2.new(0.5, 0, 0.5, 0)})
-	
+
 	Headers.Name = "Headers"
 	Headers.Parent = Block
 	Headers.Active = true
@@ -1195,7 +1195,7 @@ function Library:CreateWindow(setup)
 	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-	UIListLayout.Padding = UDim.new(0.100000001, 0)
+	UIListLayout.Padding = UDim.new(0, 10)
 
 	MinimizeButton.Name = "MinimizeButton"
 	MinimizeButton.Parent = WindowControl
@@ -1206,7 +1206,7 @@ function Library:CreateWindow(setup)
 	MinimizeButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
 	MinimizeButton.ZIndex = 10;
 	MinimizeButton.HoverImage = "rbxassetid://9886659276";
-	
+
 	UICorner.CornerRadius = UDim.new(1, 0)
 	UICorner.Parent = MinimizeButton
 
@@ -1221,7 +1221,7 @@ function Library:CreateWindow(setup)
 	MaxisizweButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
 	MaxisizweButton.HoverImage = 'rbxassetid://7733992901';
 	MaxisizweButton.ZIndex = 10;
-	
+
 	UICorner_2.CornerRadius = UDim.new(1, 0)
 	UICorner_2.Parent = MaxisizweButton
 
@@ -1236,7 +1236,7 @@ function Library:CreateWindow(setup)
 	CloseButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
 	CloseButton.ZIndex = 10;
 	CloseButton.HoverImage = "rbxassetid://9886659671";
-	
+
 	UICorner_3.CornerRadius = UDim.new(1, 0)
 	UICorner_3.Parent = CloseButton
 
@@ -1292,21 +1292,21 @@ function Library:CreateWindow(setup)
 	TabFrames.Position = UDim2.new(0.654772818, 0, 0.536134899, 0)
 	TabFrames.Size = UDim2.new(0.670454323, 0, 0.88989073, 0)
 	TabFrames.ZIndex = 4
-	
+
 	WindowLibrary.FullScreen = false;
 	WindowLibrary.Status = 'Show';
 	WindowLibrary.Toggle = true;
 	WindowLibrary.SectionTab = {};
-	
+
 	local InitDropdown = function()
 		local DropdownLibrary = {};
-		
+
 		local Dropdown = Instance.new("Frame")
 		local UIStroke = Instance.new("UIStroke")
 		local ScrollingFrame = Instance.new("ScrollingFrame")
 		local UIListLayout = Instance.new("UIListLayout")
 		local DropShadow = Instance.new("ImageLabel")
-		
+
 		Dropdown.Active = true;
 		Dropdown.Name = "Dropdown"
 		Dropdown.Parent = ScreenGui
@@ -1320,7 +1320,7 @@ function Library:CreateWindow(setup)
 		Dropdown.Size = UDim2.new(0,0,0,0)
 		Dropdown.ZIndex = 100
 		Dropdown.Visible = false;
-		
+
 		UIStroke.Transparency = 0.850
 		UIStroke.Color = Color3.fromRGB(156, 156, 156)
 		UIStroke.Parent = Dropdown
@@ -1342,11 +1342,11 @@ function Library:CreateWindow(setup)
 		UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 		UIListLayout.Padding = UDim.new(0, 6)
-		
+
 		UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
 			ScrollingFrame.CanvasSize = UDim2.fromOffset(0,UIListLayout.AbsoluteContentSize.Y)
 		end)
-		
+
 		DropShadow.Name = "DropShadow"
 		DropShadow.Parent = Dropdown
 		DropShadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -1362,7 +1362,7 @@ function Library:CreateWindow(setup)
 		DropShadow.ScaleType = Enum.ScaleType.Slice
 		DropShadow.SliceCenter = Rect.new(95, 103, 894, 902)
 		DropShadow.SliceScale = 0.050
-		
+
 		local NewButton = function(Title,HasIcon,IsDefault)
 			local Frame = Instance.new("Frame")
 			local DropShadow = Instance.new("ImageLabel")
@@ -1397,11 +1397,11 @@ function Library:CreateWindow(setup)
 			UIStroke.Transparency = 0.850
 			UIStroke.Color = Color3.fromRGB(156, 156, 156)
 			UIStroke.Parent = Frame
-			
+
 			if IsDefault then
 				UIStroke.Color = Library.Colors.Hightlight	
 			end;
-			
+
 			TextLabel.Parent = Frame
 			TextLabel.AnchorPoint = Vector2.new(0.5, 0.5)
 			TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -1419,11 +1419,11 @@ function Library:CreateWindow(setup)
 			TextLabel.TextStrokeColor3 = Library.Colors.TextColor
 			TextLabel.TextStrokeTransparency = 0.950
 			TextLabel.TextWrapped = true
-			
+
 			if IsDefault then
 				TextLabel.TextColor3 = Library.Colors.Hightlight
 			end;
-			
+
 			Button.Name = "Button"
 			Button.Parent = Frame
 			Button.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -1453,15 +1453,15 @@ function Library:CreateWindow(setup)
 			Icon.Visible = false
 			Icon.ZIndex = 116
 			Icon.Image = "rbxassetid://10709775704"
-			
+
 			if HasIcon then
 				Icon.Visible = true
 				Icon.Image = HasIcon;
 			end;
-			
+
 			return Button
 		end;
-		
+
 		function WindowLibrary:ClearDropdown()
 			table.foreach(ScrollingFrame:GetChildren(),function(i,v)
 				if v.ClassName == 'Frame' then
@@ -1469,8 +1469,8 @@ function Library:CreateWindow(setup)
 				end;
 			end)
 		end;
-		
-		
+
+
 		function WindowLibrary:SetDropdownValues(Type,Table,Default,Callback)
 			if Type == 1 then -- Normal
 				local OldButton = nil;
@@ -1490,15 +1490,16 @@ function Library:CreateWindow(setup)
 								OldButton.TextLabel.TextColor3 = Library.Colors.TextColor
 							end;
 						end;
-						
+
 						OldButton = {
 							UIStroke = Button.Parent:WaitForChild('UIStroke'),
+							TextLabel = Button.Parent:WaitForChild('TextLabel'),
 							Object = v;
 						};
-						
+
 						Button.Parent:WaitForChild('UIStroke').Color = Library.Colors.Hightlight;
 						Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.Hightlight
-						
+
 						Callback(v);
 					end)
 
@@ -1514,26 +1515,26 @@ function Library:CreateWindow(setup)
 				local MaxMulti = Default.Max;
 				local DefaultInfo = Default.Info;
 				local MultiData = {};
-				
+
 				local Len = function()
 					local std = 0;
-					
+
 					table['foreach'](MultiData,function()
 						std += 1;
 					end)
-					
+
 					return std;
 				end;
-				
+
 				for i,v in pairs(Table) do
 					local Button;
-					
+
 					if typeof(v) ~= 'table' then
 						Button = NewButton(tostring(v),false,table.find(DefaultInfo,v));
 					else
 						Button = NewButton(tostring(v),v.Icon,table.find(DefaultInfo,v));
 					end;
-					
+
 					local UIStroke = Button.Parent:WaitForChild('UIStroke');
 
 
@@ -1541,77 +1542,77 @@ function Library:CreateWindow(setup)
 						if MultiData[v] then
 							UIStroke.Color = Color3.fromRGB(156, 156, 156)
 							Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.TextColor
-							
+
 							MultiData[v] = nil;
-							
-							
+
+
 						else
 							if (Len() + 1) > MaxMulti then
 								return;
 							end;
-							
+
 							MultiData[v] = {
 								Object = v,
 								UIStroke = UIStroke,
 							};
-							
+
 							Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.Hightlight
 							UIStroke.Color = Library.Colors.Hightlight;
 						end;
-						
+
 						local info = {};
-						
+
 						table.foreach(MultiData,function(a)
 							table.insert(info,a)
 						end)
-						
+
 						Callback(info);
 					end)
-					
+
 					if table.find(DefaultInfo,v) then
-						
+
 						MultiData[v] = {
 							Object = v,
 							UIStroke = UIStroke,
 						}
-				
+
 					end
 				end;
 			end;
 		end;
-		
+
 		DropdownLibrary.OnDropdown = false;
 		DropdownLibrary.Hover = false;
 		local CloseTick = tick();
-		
+
 		function WindowLibrary:OpenDropdown(BaseFrame :Frame)
 			DropdownLibrary.OnDropdown = true;
-			
+
 			Dropdown.Visible = true;
 			DropdownLibrary.BaseFrame = BaseFrame;
-			
+
 			Library:Tween(Dropdown,Library.TweenLibrary.SmallEffect,{
 				Size = UDim2.new(0, 173, 0, 213),
 				Position = UDim2.fromOffset(BaseFrame.AbsolutePosition.X,BaseFrame.AbsolutePosition.Y)
 			})
 		end;
-		
+
 		function WindowLibrary:CloseDropdown(BaseFrame :Frame)
 			DropdownLibrary.OnDropdown = false;
-			
+
 			Library:Tween(Dropdown,Library.TweenLibrary.SmallEffect,{
 				Size = UDim2.new(0,0,0,0),
 			})
 		end;
-		
+
 		Dropdown.MouseEnter:Connect(function()
 			DropdownLibrary.Hover = true;
 		end)
-		
+
 		Dropdown.MouseLeave:Connect(function()
 			DropdownLibrary.Hover = false;
 		end)
-		
+
 		Library.UserInputService.InputBegan:Connect(function(std)
 			if std.UserInputType == Enum.UserInputType.MouseButton1 or std.UserInputType == Enum.UserInputType.MouseButton2 or std.UserInputType == Enum.UserInputType.Touch then
 				if not DropdownLibrary.Hover then
@@ -1620,7 +1621,7 @@ function Library:CreateWindow(setup)
 				end
 			end;
 		end)
-		
+
 		game:GetService('RunService').RenderStepped:Connect(function()
 			if DropdownLibrary.OnDropdown and DropdownLibrary.BaseFrame then
 				Library:Tween(Dropdown,Library.TweenLibrary.SmallEffect,{
@@ -1634,14 +1635,14 @@ function Library:CreateWindow(setup)
 			end
 		end)
 	end;
-	
+
 	InitDropdown();
-	
+
 	function WindowLibrary:AddTab(TabSetup)
 		TabSetup = TabSetup or {};
 		TabSetup.Title = TabSetup.Title or "Example";
 		TabSetup.Icon = TabSetup.Icon or 'home';
-		
+
 		local TFrame = Instance.new("Frame")
 		local DropShadow = Instance.new("ImageLabel")
 		local UIStroke = Instance.new("UIStroke")
@@ -1685,7 +1686,7 @@ function Library:CreateWindow(setup)
 		Icon.BackgroundTransparency = 1.000
 		Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Icon.BorderSizePixel = 0
-		Icon.Position = UDim2.new(0.0250000004, 0, 0.5, 0)
+		Icon.Position = UDim2.new(0, 5, 0.5, 0)
 		Icon.Size = UDim2.new(0.649999976, 0, 0.649999976, 0)
 		Icon.SizeConstraint = Enum.SizeConstraint.RelativeYY
 		Icon.ZIndex = 5
@@ -1738,7 +1739,7 @@ function Library:CreateWindow(setup)
 		Button.TextColor3 = Color3.fromRGB(0, 0, 0)
 		Button.TextSize = 14.000
 		Button.TextTransparency = 1.000
-		
+
 		local Root = {};
 		local TabCenterFrame = Instance.new("Frame")
 		local ScrollingFrame = Instance.new("ScrollingFrame")
@@ -1772,13 +1773,13 @@ function Library:CreateWindow(setup)
 		UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 		UIListLayout.Padding = UDim.new(0, 7)
-		
+
 		UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
 			ScrollingFrame.CanvasSize = UDim2.fromOffset(0,UIListLayout.AbsoluteContentSize.Y)
 		end)
-		
+
 		Library:MakeDrop(TFrame , UIStroke , Library.Colors.Hightlight)
-		
+
 		local TabToggle = function(Value)
 			if Value then
 				TabCenterFrame.Visible = true;
@@ -1786,7 +1787,7 @@ function Library:CreateWindow(setup)
 					ImageTransparency = 0.150,
 					Position = UDim2.new(0.980000019, 0, 0.5, 0)
 				})
-				
+
 				Library:Tween(TabCenterFrame,Library.TweenLibrary.SmallEffect,{
 					Position = UDim2.new(0.5, 0, 0.500999987, 0),
 				})
@@ -1796,21 +1797,21 @@ function Library:CreateWindow(setup)
 					ImageTransparency = 1,
 					Position = UDim2.new(1, 0, 0.5, 0)
 				})
-				
+
 				Library:Tween(TabCenterFrame,Library.TweenLibrary.SmallEffect,{
 					Position = UDim2.new(0.5, 0, 0.5500999987, 0),
 				})
 			end;
 		end;
-		
+
 		TabToggle(not WindowLibrary.SectionTab[1])
-		
+
 		table.insert(WindowLibrary.SectionTab,{Id = TFrame , TabToggle = TabToggle});
-		
+
 		TFrame:GetPropertyChangedSignal('AbsoluteSize'):Connect(function()
 			Title.Position = UDim2.new((30 / TFrame.AbsoluteSize.X), 0, 0.5, 0)
 		end)
-		
+
 		Button.MouseButton1Click:Connect(function()
 			for i,v in ipairs(WindowLibrary.SectionTab) do
 				if v.Id == TFrame then
@@ -1820,13 +1821,13 @@ function Library:CreateWindow(setup)
 				end;
 			end;
 		end)
-		
+
 		function Root:AddBlock(Setup)
 			Setup = Setup or "Block";
-			
+
 			local BlockLabel = Instance.new("Frame")
 			local TextLabel = Instance.new("TextLabel")
-			
+
 			BlockLabel.Name = "BlockLabel"
 			BlockLabel.Parent = ScrollingFrame
 			BlockLabel.BackgroundColor3 = Library.Colors.Default
@@ -1854,20 +1855,20 @@ function Library:CreateWindow(setup)
 			TextLabel.TextStrokeTransparency = 0.950
 			TextLabel.TextWrapped = true
 			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-			
+
 			local RootSkid = {};
-			
+
 			function RootSkid:Value(Setup)
 				TextLabel.Text = Setup
 			end;
-			
+
 			function RootSkid:Visible(value)
 				BlockLabel.Visible = value;
 			end;
-			
+
 			return RootSkid;
 		end;
-		
+
 		function Root:AddButton(setup)
 			setup = setup or {};
 			setup.Title = setup.Title or "Button"
@@ -1953,7 +1954,7 @@ function Library:CreateWindow(setup)
 			Button.TextColor3 = Color3.fromRGB(0, 0, 0)
 			Button.TextSize = 14.000
 			Button.TextTransparency = 1.000
-			
+
 			Library:MakeDrop(ButtonBlock , UIStroke , Library.Colors.Hightlight)
 
 			Button.MouseButton1Down:Connect(function()
@@ -1962,42 +1963,42 @@ function Library:CreateWindow(setup)
 					ImageTransparency = 0.4
 				})
 			end)
-			
+
 			Button.MouseButton1Up:Connect(function()
 				Library:Tween(Arrow,Library.TweenLibrary.SmallEffect,{
 					Position = UDim2.new(0.980000019, 0, 0.5, 0),
 					ImageTransparency = 0.15
 				})
 			end)
-			
+
 			Button.MouseButton1Click:Connect(function()
 				setup.Callback()
 			end)
-			
+
 			local RootSkid = {};
 
 			function RootSkid:Value(Setup)
 				TextLabel.Text = Setup
 			end;
-			
+
 			function RootSkid:Fire(...)
 				setup.Callback(...);	
 			end;
-			
+
 			function RootSkid:Visible(value)
 				ButtonBlock.Visible = value;
 			end;
 
 			return RootSkid;
 		end;
-		
+
 		function Root:AddToggle(setup)
 			setup = setup or {};
-			
+
 			setup.Title = setup.Title or "Toggle"
 			setup.Default = setup.Default or false;
 			setup.Callback = setup.Callback or function() end;
-			
+
 			local ToggleBlock = Instance.new("Frame")
 			local DropShadow = Instance.new("ImageLabel")
 			local UIStroke = Instance.new("UIStroke")
@@ -2101,9 +2102,9 @@ function Library:CreateWindow(setup)
 			Button.TextColor3 = Color3.fromRGB(0, 0, 0)
 			Button.TextSize = 14.000
 			Button.TextTransparency = 1.000
-			
+
 			Library:MakeDrop(ToggleBlock , UIStroke , Library.Colors.Hightlight)
-			
+
 			local UILib = function(value)
 				if value then
 					Library:Tween(ValueBlock,Library.TweenLibrary.SmallEffect,{
@@ -2117,22 +2118,22 @@ function Library:CreateWindow(setup)
 					})
 				end;
 			end;
-			
+
 			UILib(setup.Default);
-			
+
 			Button.MouseButton1Click:Connect(function()
 				setup.Default = not setup.Default;
-				
+
 				UILib(setup.Default);
-				
+
 				setup.Callback(setup.Default)
 			end)
-			
+
 			local RootSkid = {};
 
 			function RootSkid:Value(Setup)
 				setup.Default = Setup
-				
+
 				UILib(setup.Default);
 
 				setup.Callback(setup.Default)
@@ -2144,14 +2145,14 @@ function Library:CreateWindow(setup)
 
 			return RootSkid;
 		end;
-		
+
 		function Root:AddTextbox(setup)
 			setup = setup or {};
 			setup.Title = setup.Title or 'TextBox';
 			setup.PlaceHolder = setup.PlaceHolder or '';
 			setup.Default = setup.Default or '';
 			setup.Callback = setup.Callback or function() end;
-			
+
 			local TextBoxBlock = Instance.new("Frame")
 			local DropShadow = Instance.new("ImageLabel")
 			local UIStroke = Instance.new("UIStroke")
@@ -2244,14 +2245,14 @@ function Library:CreateWindow(setup)
 			TextBox.TextSize = 12.000
 			TextBox.TextStrokeTransparency = 0.950
 			TextBox.TextWrapped = true
-			
+
 			local PlaceHolder = Library:GetTextSize(setup.PlaceHolder,13,TextBox.Font);
-			
+
 			local Update = function()
 				local size = Library:GetTextSize(TextBox.Text,TextBox.TextSize,TextBox.Font);
 
 				--Block.Size = UDim2.new(0, math.clamp(size.X + 5 , PlaceHolder.X , TextBoxBlock.AbsoluteSize.X / 1.25), 0.5, 0);
-				
+
 				if WindowLibrary.Toggle then
 					pcall(function()
 						Library:Tween(Block,Library.TweenLibrary.SmallEffect,{
@@ -2260,31 +2261,31 @@ function Library:CreateWindow(setup)
 					end)
 				end;
 			end;
-			
+
 			Block.Size = UDim2.new(0, PlaceHolder.X, 0.5, 0);
-			
+
 			Library:MakeDrop(TextBoxBlock , UIStroke , Library.Colors.Hightlight)
-			
+
 			Library:MakeDrop(Block , UIStroke_2 , Library.Colors.Hightlight)
-			
+
 			TextBox:GetPropertyChangedSignal('Text'):Connect(function()
 				Update()
 				setup.Callback(TextBox.Text)
 			end)
-			
+
 			TextBoxBlock:GetPropertyChangedSignal('AbsoluteSize'):Connect(Update);
-			
+
 			Update();
-			
+
 			local RootSkid = {};
-			
+
 			function RootSkid:Empty()
 				setup.Default = ""
 				TextBox.Text = ""
 				Update()
 				setup.Callback('')
 			end;
-			
+
 			function RootSkid:Value(Setup)
 				setup.Default = Setup
 				TextBox.Text = setup.Default
@@ -2298,12 +2299,12 @@ function Library:CreateWindow(setup)
 
 			return RootSkid;
 		end;
-		
+
 		function Root:AddParagraph(Setup)
 			Setup = Setup or {};
 			Setup.Title = Setup.Title
 			Setup.Description = Setup.Description or "";
-			
+
 			local ParagraphBlock = Instance.new("Frame")
 			local DropShadow = Instance.new("ImageLabel")
 			local UIStroke = Instance.new("UIStroke")
@@ -2377,37 +2378,37 @@ function Library:CreateWindow(setup)
 			Description.TextWrapped = true
 			Description.TextXAlignment = Enum.TextXAlignment.Left
 			Description.TextYAlignment = Enum.TextYAlignment.Top
-			
+
 			local UpdateBlock = function()
 				local TitleSize = 14;
 				local DescriptionSize = Library:GetTextSize(Description.Text,Description.TextSize,Description.Font).Y;
-				
+
 				Description.Size = UDim2.new(1, 0, 0, DescriptionSize)
-				
+
 				if Description.Text:byte() then
 					Description.Visible = true;
 					Library:Tween(ParagraphBlock,Library.TweenLibrary.SmallEffect,{
 						Size = UDim2.new(0.99, 0, 0, TitleSize + ((Description.Visible and Description.AbsoluteSize.Y + 10) or 0));
 					});
-					
+
 				else
 					Description.Visible = false;
-					
+
 					Library:Tween(ParagraphBlock,Library.TweenLibrary.SmallEffect,{
 						Size = UDim2.new(0.99, 0, 0, Title.AbsoluteSize.Y + 10);
 					});
 				end;
 			end;
-			
+
 			UpdateBlock()
-			
+
 			local RootSkid = {};
 
 			function RootSkid:Title(Setup)
 				Title.Text = setup
 				UpdateBlock()
 			end;
-			
+
 			function RootSkid:Description(Setup)
 				Description.Text = setup
 				UpdateBlock()
@@ -2419,8 +2420,8 @@ function Library:CreateWindow(setup)
 
 			return RootSkid;
 		end;
-		
-		
+
+
 		function Root:AddSlider(setup)
 			setup = setup or {};
 			setup.Title = setup.Title or 'Slider';
@@ -2429,7 +2430,7 @@ function Library:CreateWindow(setup)
 			setup.Default = setup.Default or setup.Min;
 			setup.Round = setup.Round or 0;
 			setup.Callback = setup.Callback or function() end;
-		
+
 			local SliderBlock = Instance.new("Frame")
 			local DropShadow = Instance.new("ImageLabel")
 			local UIStroke = Instance.new("UIStroke")
@@ -2544,41 +2545,41 @@ function Library:CreateWindow(setup)
 			ValueText.TextStrokeTransparency = 0.950
 			ValueText.TextWrapped = true
 			ValueText.TextXAlignment = Enum.TextXAlignment.Right
-			
+
 			local IsHold = false
 			local RoundNum = setup.Round;
-			
+
 			Library:MakeDrop(SliderBlock , UIStroke , Library.Colors.Hightlight)
-			
-			
+
+
 			local function Rounding(num, numDecimalPlaces)
 				local mult = 10^(numDecimalPlaces or 0)
 				return math.floor(num * mult + 0.5) / mult
 			end
-			
+
 			local UpdateSize = function()
 				Block.Size = UDim2.new(0, (SliderBlock.AbsoluteSize.X / 2), 0.225, 0)
 			end;
-			
+
 			Library:Tween(Move , Library.TweenLibrary.FastEffect,{
 				Position = UDim2.new(setup.Default / setup.Max, 0, 0.5, 0)
 			});
-			
+
 			SliderBlock:GetPropertyChangedSignal('AbsoluteSize'):Connect(UpdateSize);
-			
+
 			local function update(Input)
-				
+
 				local SizeScale = math.clamp((((Input.Position.X) - Block.AbsolutePosition.X) / Block.AbsoluteSize.X), 0, 1)
 				local Main = ((setup.Max - setup.Min) * SizeScale) + setup.Min;
 				local Value = Rounding(Main,RoundNum)
 				local PositionX = UDim2.fromScale(SizeScale, 1)
-			
+
 				Library:Tween(Move , Library.TweenLibrary.FastEffect,{
 					Position = UDim2.new(Value / setup.Max, 0, 0.5, 0)
 				});
-				
+
 				ValueText.Text = tostring(Value) .. '/' .. tostring(setup.Max)
-				
+
 				setup.Callback(Value)
 			end;
 
@@ -2602,48 +2603,48 @@ function Library:CreateWindow(setup)
 					end
 				end
 			end)
-			
+
 			local RootSkid = {};
 
 			function RootSkid:Value(Setup)
 				setup.Default = Setup;
-				
+
 				Library:Tween(Move , Library.TweenLibrary.FastEffect,{
 					Position = UDim2.new(setup.Default / setup.Max, 0, 0.5, 0)
 				});
 
 				ValueText.Text = tostring(setup.Default) .. '/' .. tostring(setup.Max)
 			end;
-			
+
 			function RootSkid:Visible(value)
 				SliderBlock.Visible = value;
 			end;
 
 			return RootSkid;
 		end;
-		
+
 		function Root:AddKeybind(setup)
 			setup = setup or {};
 			setup.Title = setup.Title or "Keybind";
 			setup.Default = setup.Default or "NONE";
 			setup.Callback = setup.Callback or function() end;
-			
+
 			local Parser = function(code)
 				if typeof(code) == 'EnumItem' then
 					return code.Name;	
 				end;
-				
+
 				local i,d = pcall(function()
 					return Enum.KeyCode[code]
 				end)
-				
+
 				if i then	
 					return d.Name;
 				end;
-				
+
 				return "NONE"
 			end;
-			
+
 			local KeybindBlock = Instance.new("Frame")
 			local DropShadow = Instance.new("ImageLabel")
 			local UIStroke = Instance.new("UIStroke")
@@ -2750,58 +2751,58 @@ function Library:CreateWindow(setup)
 			Button.TextColor3 = Color3.fromRGB(0, 0, 0)
 			Button.TextSize = 14.000
 			Button.TextTransparency = 1.000
-			
+
 			Library:MakeDrop(KeybindBlock , UIStroke , Library.Colors.Hightlight);
-			
+
 			local UpdateSize = function()
 				local Size = Library:GetTextSize(ValueText.Text,ValueText.TextSize,ValueText.Font);
-				
+
 				Library:Tween(Block , Library.TweenLibrary.SmallEffect,{
 					Size = UDim2.new(0,Size.X + 10,0.5,0)
 				})
 			end;
-			
+
 			UpdateSize();
-			
+
 			local Await = false;
-			
+
 			Button.MouseButton1Click:Connect(function()
 				if Await then return; end;
-				
+
 				Await = true;
 				local KeyCode = nil;
-				
+
 				ValueText.Text = '...';
-				
+
 				UpdateSize()
-				
+
 				while true do
-					
+
 					local Input = Library.UserInputService.InputBegan:Wait();
-					
+
 					if Input.KeyCode and Input.KeyCode ~= Enum.KeyCode.Unknown then
 						KeyCode = Input.KeyCode;
 						break;
 					end;
 				end;
-				
+
 				ValueText.Text = KeyCode.Name;
-				
+
 				UpdateSize();
-				
+
 				setup.Callback(KeyCode)
 				Await = false;
 			end)
-			
+
 			local RootSkid = {};
 
 			function RootSkid:Value(Setup)
 				setup.Default = Setup;
 
 				ValueText.Text = Parser(Setup);
-				
+
 				UpdateSize();
-				
+
 				setup.Callback(Setup)
 			end;
 
@@ -2811,8 +2812,8 @@ function Library:CreateWindow(setup)
 
 			return RootSkid;
 		end;
-		
-		
+
+
 		function Root:AddDropdown(setup)
 			setup = setup or {};
 			setup.Title = setup.Title or "Dropdown";
@@ -2826,13 +2827,13 @@ function Library:CreateWindow(setup)
 				if typeof(a) ~= 'table' then
 					return tostring(a);
 				end;
-				
+
 				local p,l = pcall(table.concat,a,' , ')
-				
+
 				if p then return l; end;
-				
+
 				local std = {};
-				
+
 				table.foreach(a,function(a,v)
 					if typeof(v) == 'boolean' then
 						table.insert(std,tostring(a));
@@ -2840,10 +2841,10 @@ function Library:CreateWindow(setup)
 						table.insert(std,tostring(v));
 					end;
 				end)
-				
+
 				return table.concat(std,' , ')
 			end;
-			
+
 			local DropdownBlock = Instance.new("Frame")
 			local DropShadow = Instance.new("ImageLabel")
 			local UIStroke = Instance.new("UIStroke")
@@ -2950,11 +2951,11 @@ function Library:CreateWindow(setup)
 			ValueText.TextStrokeColor3 = Library.Colors.TextColor
 			ValueText.TextStrokeTransparency = 0.950
 			ValueText.TextWrapped = true
-			
+
 			Library:MakeDrop(DropdownBlock , UIStroke , Library.Colors.Hightlight)
 
 			Library:MakeDrop(Block,UIStroke_2,Library.Colors.Hightlight);
-			
+
 			local UpdateSize = function()
 				local size = Library:GetTextSize(ValueText.Text,ValueText.TextSize,ValueText.Font)
 				pcall(function()
@@ -2963,21 +2964,21 @@ function Library:CreateWindow(setup)
 					})
 				end)
 			end;
-			
+
 			local OnCallback = function(a)
 				ValueText.Text = (setup.Multi and Fconcat(a)) or tostring(a);
 				setup.Default = a;
 				UpdateSize()
 				setup.Callback(a)
 			end;
-			
+
 			UpdateSize();
-			
+
 			Button.MouseButton1Click:Connect(function()
 				UpdateSize();
-				
+
 				WindowLibrary:ClearDropdown();
-				
+
 				if setup.Multi then
 					WindowLibrary:SetDropdownValues(0,setup.Values,{
 						Info = setup.Default,
@@ -2986,16 +2987,16 @@ function Library:CreateWindow(setup)
 				else
 					WindowLibrary:SetDropdownValues(1,setup.Values,setup.Default,OnCallback)
 				end;
-				
+
 				WindowLibrary:OpenDropdown(Block);
 			end)
-			
+
 			local RootSkid = {};
-			
+
 			function RootSkid:GetValue()
 				return setup.Default;
 			end;
-			
+
 			function RootSkid:Value(Setup)
 				setup.Default = setup;
 				ValueText.Text = (setup.Multi and Fconcat(Setup)) or tostring(Setup);
@@ -3010,28 +3011,28 @@ function Library:CreateWindow(setup)
 
 			return RootSkid;
 		end;
-		
+
 		return Root;
 	end;
-	
+
 	function WindowLibrary:GetRoot()
 		return MainFrame;
 	end;
-	
+
 	function WindowLibrary:Resize(udim : UDim2)
 		Library:Tween(MainFrame , Library.TweenLibrary.SmallEffect,{
 			Size = udim,
 		});
-		
+
 		setup.Size = udim
 	end;
-	
+
 	function WindowLibrary:Destroy()
 		ScreenGui:Destroy();
 		BlurEle.Destroy();
 		return true;
 	end;
-	
+
 	CloseButton.MouseButton1Click:Connect(function()
 		Library:Tween(MainFrame , Library.TweenLibrary.SmallEffect,{
 			Size = UDim2.fromScale(0,0),
@@ -3041,11 +3042,11 @@ function Library:CreateWindow(setup)
 			WindowLibrary:Destroy()
 		end)
 	end)
-	
+
 	local ToggleButton = Library:InputButton(Ico);
-	
+
 	ToggleButton.Visible = false;
-	
+
 	local OnScreen = function()
 		WindowLibrary.Toggle = true;
 		ToggleButton.Visible = false;
@@ -3068,23 +3069,23 @@ function Library:CreateWindow(setup)
 			MaxisizweButton.HoverImage = 'rbxassetid://7733992901'
 		end;
 	end;
-	
+
 	MaxisizweButton.MouseButton1Click:Connect(function()
 		WindowLibrary.FullScreen = not WindowLibrary.FullScreen;
 		OnScreen()
-		
+
 	end)
-	
+
 	ToggleButton.MouseButton1Click:Connect(function()
 		WindowLibrary.Toggle = true;
-		
+
 		ToggleButton.Visible = false;
 		Library:Tween(Block , Library.TweenLibrary.WindowChangedFast,{Position = UDim2.new(0.5, 0, 0.5, 0)})
 		Library:Tween(Ico , Library.TweenLibrary.WindowChangedFast,{ImageTransparency = 1})
 
 		OnScreen()
 	end)
-	
+
 	local Min = function()
 		WindowLibrary.Toggle = not WindowLibrary.Toggle;
 
@@ -3102,15 +3103,15 @@ function Library:CreateWindow(setup)
 			Library:Tween(MainFrame , Library.TweenLibrary.SmallEffect,{
 				Size = Library.SizeLibrary.Close,
 			})
-			
+
 			Library:Tween(MainFrame , Library.TweenLibrary.WindowChangedFast,{
 				Position = UDim2.fromScale(0.035,0.035)
 			})
 		end;
 	end;
-	
+
 	MinimizeButton.MouseButton1Click:Connect(Min)
-	
+
 	local dragToggle = nil;
 	local dragSpeed = 0.1;
 	local dragStart = nil;
@@ -3120,13 +3121,13 @@ function Library:CreateWindow(setup)
 		Library:Tween(MainFrame , Library.TweenLibrary.WindowChangedFast,{
 			Size = setup.Size,
 		});
-		
+
 		local delta = input.Position - dragStart;
 		local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
 			startPos.Y.Scale, startPos.Y.Offset + delta.Y);
-		
+
 		WindowLibrary.FullScreen = false;
-		
+
 		game:GetService('TweenService'):Create(MainFrame, TweenInfo.new(dragSpeed), {Position = position}):Play()
 	end;
 
@@ -3142,7 +3143,7 @@ function Library:CreateWindow(setup)
 			end)
 		end;
 	end)
-	
+
 	Library.UserInputService.InputBegan:Connect(function(input,Istype)
 		if input.KeyCode == setup.Keybind and not Istype then
 			Min()
@@ -3151,7 +3152,7 @@ function Library:CreateWindow(setup)
 
 	local Resize = Instance.new("TextButton")
 	local IsHold = false;
-	
+
 	Resize.Name = "Resize"
 	Resize.Parent = MainFrame
 	Resize.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -3168,13 +3169,13 @@ function Library:CreateWindow(setup)
 	Resize.Text = ""
 	Resize.TextColor3 = Color3.fromRGB(0, 0, 0)
 	Resize.TextSize = 14.000
-	
+
 	Resize.InputBegan:Connect(function(std)
 		if std.UserInputType == Enum.UserInputType.MouseButton1 or std.UserInputType == Enum.UserInputType.Touch then
 			IsHold = true
 		end
 	end)
-	
+
 	Resize.InputEnded:Connect(function(std)
 		if std.UserInputType == Enum.UserInputType.MouseButton1 or std.UserInputType == Enum.UserInputType.Touch then
 			IsHold = false
@@ -3193,23 +3194,23 @@ function Library:CreateWindow(setup)
 
 			local Offset = UDim2.new(0,x,0,y)
 			local plus = UDim2.fromOffset(-(MainFrame.AbsoluteSize.X - x) / 2, -(MainFrame.AbsoluteSize.Y - y) / 2);
-			
+
 			Library:Tween(MainFrame , Library.TweenLibrary.FastEffect,{
 				Size = Offset,
 				Position = MainFrame.Position + plus,
 			})
-			
+
 			setup.Size = Offset
 		end;
-		
+
 		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
 			if dragToggle then
 				updateInput(input);
 			end;
 		end;
 	end)
-	
-	
+
+
 	return WindowLibrary;
 end;
 
