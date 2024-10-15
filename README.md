@@ -154,7 +154,7 @@ Window:Resize(Library.SizeLibrary.Default) -- UDim2
 ```lua
 local Library = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/3345-c-a-t-s-u-s/Acrylic/refs/heads/main/source'))();
 
-Library.Theme:Discord()
+--Library.Theme:Discord()
 
 local Window = Library:CreateWindow({
 	Title = 'Acrylic',
@@ -268,4 +268,29 @@ SettingsTab:AddButton({
 		Window:Destroy()
 	end,
 })
+```
+
+# Key System
+```lua
+local Window = Library:CreateWindow({
+	Title = 'Acrylic',
+	Logo = "rbxassetid://7733920644",
+	KeySystem = true,
+	KeySystemInfo = {
+		Title = "- Key System -",
+		OnGetKey = function()
+			return setclipboard('https://example.com/getkey?hwid=')
+		end,
+		OnLogin = function(key)
+			if key == "1234" then
+				wait(0.1);
+				return true;
+			end;
+			
+			wait();
+			
+			return false;
+		end,
+	}
+});
 ```
