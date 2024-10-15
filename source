@@ -1171,7 +1171,7 @@ function Library:CreateWindow(setup)
 	Title.Size = UDim2.new(0.980000019, 0, 0.600000024, 0)
 	Title.ZIndex = 3
 	Title.Font = Enum.Font.Gotham
-	Title.Text = "Window"
+	Title.Text = setup.Title
 	Title.TextColor3 = Library.Colors.TextColor
 	Title.TextScaled = true
 	Title.TextSize = 14.000
