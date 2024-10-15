@@ -142,7 +142,7 @@ ExampleTab:AddParagraph({
 
 ### Disable Animation
 ```lua
-Library.PerformanceMode = false;
+Library.PerformanceMode = true;
 ```
 
 ### Change UI Size
