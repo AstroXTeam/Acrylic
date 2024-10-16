@@ -139,6 +139,32 @@ ExampleTab:AddParagraph({
 })
 ```
 
+### Create Lua Code
+```lua
+ExampleTab:AddParagraph({
+	Title = 'Paragraph',
+	Description = 'This is Lua Script!\n'..Library:HightlightSource([[
+local function primes(n)
+    local function isPrime(n)
+        for i = 2, math.sqrt(n) do
+            if n % i == 0 then
+                return false
+            end
+        end
+        return true
+    end
+    for i = 2, n do
+        if isPrime(i) then
+            print(i)
+        end
+    end
+end
+
+primes(20)
+	]])
+})
+```
+
 # Functions
 
 ### Disable Animation
