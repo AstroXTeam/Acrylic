@@ -3,9 +3,10 @@ This UI Library is skid
 - [Discord](https://discord.gg/kfZKGeWyhc)
 
 - Why choose?
+
 1. It cool 😎
-2. no skid 100%
-3. suopport mobile 😎
+2. not skid 1000%
+3. support mobile 😎
 4. nothing ✅
 
 ![Screenshot 2024-10-15 193045](https://github.com/user-attachments/assets/04d94fd1-b5be-4dd0-8ebb-e9bee932e05d)
