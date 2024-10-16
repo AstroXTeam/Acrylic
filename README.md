@@ -35,6 +35,9 @@ Library.Theme:Matcha()
 ```
 
 ## Create Dialogs
+
+![Screenshot 2024-10-16 144720](https://github.com/user-attachments/assets/2fa97e73-8b2c-4b95-96bd-629c7376ea3a)
+
 ```lua
 Window:Dialog({
 	Title = "Dialog",
