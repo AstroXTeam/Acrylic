@@ -1,5 +1,10 @@
 local Library = {
-	Version = 'skid-alib.0.1'	
+	Version = 'skid-alib.0.2',
+	Loaded = true,
+	Discord = 'discord.gg/kfZKGeWyhc',
+	env = getgenv or getfenv,
+	Executor = {"s","w","z","t","a","c"},
+	Skid = true,
 };
 
 Library.Icons = {
@@ -578,7 +583,7 @@ Library.TweenService = game:GetService('TweenService');
 Library.LocalPlayer = game:GetService('Players').LocalPlayer;
 Library.CoreGui = (game:FindFirstChild('CoreGui') and Library.Cloneref(game:GetService('CoreGui'))) or Library.LocalPlayer.PlayerGui;
 Library.SizeLibrary = {
-	Default = UDim2.fromOffset(580, 460),
+	Default = UDim2.fromOffset(580, 385),
 	Auth = UDim2.new(0.05, 250,0.05, 125),
 	Max = UDim2.fromScale(1,1),
 	Loading = UDim2.new(0, 90,0, 90),
@@ -719,6 +724,8 @@ Library.UIBlur = (_C and Source) or require(script:WaitForChild('UIBlur'));
 Library.UserInputService = game:GetService('UserInputService');
 Library.PerformanceMode = false;
 Library.CodeColors = {};
+Library.TabButtonHeight = 30;
+Library.ItemHeight = 35;
 
 local DefaultStyle = function()
 	Library.CodeColors.backgroundColor = Color3.fromRGB(40, 44, 52)
@@ -1555,13 +1562,13 @@ function Library:CreateWindow(setup)
 
 	DataFrame.Name = "DataFrame"
 	DataFrame.Parent = Block
-	DataFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+	DataFrame.AnchorPoint = Vector2.new(0.5, 1)
 	DataFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	DataFrame.BackgroundTransparency = 1.000
 	DataFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	DataFrame.BorderSizePixel = 0
 	DataFrame.ClipsDescendants = true
-	DataFrame.Position = UDim2.new(0.161166608, 0, 0.524999917, 0)
+	DataFrame.Position = UDim2.new(0.161166608, 0, 0.99, 0)
 	DataFrame.Size = UDim2.new(0.302333206, 0, 0.920000017, 0)
 	DataFrame.ZIndex = 2
 
@@ -1582,7 +1589,14 @@ function Library:CreateWindow(setup)
 	UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
 	UIListLayout_2.Padding = UDim.new(0, 1000)
-
+	
+	local LogUpdate = function()
+		DataFrame.Size = UDim2.new(0.302333206, 0, 0, MainFrame.AbsoluteSize.Y - 33)
+		TabFrames.Size = UDim2.new(0.670454323, 0, 0, MainFrame.AbsoluteSize.Y - 47)
+	end
+	
+	MainFrame:GetPropertyChangedSignal('AbsoluteSize'):Connect(LogUpdate)
+	
 	Library:Tween(UIListLayout_2 , TweenInfo.new(1.5,Enum.EasingStyle.Quint),{
 		Padding = UDim.new(0, 6)
 	})
@@ -1593,13 +1607,13 @@ function Library:CreateWindow(setup)
 
 	TabFrames.Name = "TabFrames"
 	TabFrames.Parent = Block
-	TabFrames.AnchorPoint = Vector2.new(0.5, 0.5)
+	TabFrames.AnchorPoint = Vector2.new(0.5, 1)
 	TabFrames.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	TabFrames.BackgroundTransparency = 1.000
 	TabFrames.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	TabFrames.BorderSizePixel = 0
 	TabFrames.ClipsDescendants = true
-	TabFrames.Position = UDim2.new(0.654772818, 0, 0.536134899, 0)
+	TabFrames.Position = UDim2.new(0.654772818, 0, 0.99, 0)
 	TabFrames.Size = UDim2.new(0.670454323, 0, 0.88989073, 0)
 	TabFrames.ZIndex = 4
 
@@ -1911,8 +1925,14 @@ function Library:CreateWindow(setup)
 			DropdownLibrary.OnDropdown = false;
 
 			Library:Tween(Dropdown,Library.TweenLibrary.SmallEffect,{
-				Size = UDim2.new(0,0,0,0),
+				Size = UDim2.new(0,90,0,0),
 			})
+			
+			if DropdownLibrary.BaseFrame then
+				Library:Tween(Dropdown,Library.TweenLibrary.SmallEffect,{
+					Position = UDim2.new(0,DropdownLibrary.BaseFrame.AbsolutePosition.X + (DropdownLibrary.BaseFrame.AbsoluteSize.X / 2),0,DropdownLibrary.BaseFrame.AbsolutePosition.Y),
+				})
+			end
 		end;
 
 		Dropdown.MouseEnter:Connect(function()
@@ -1936,7 +1956,7 @@ function Library:CreateWindow(setup)
 			if DropdownLibrary.OnDropdown and DropdownLibrary.BaseFrame then
 				Library:Tween(Dropdown,Library.TweenLibrary.SmallEffect,{
 					Size = UDim2.new(0, 173, 0, 213),
-					Position = UDim2.fromOffset(DropdownLibrary.BaseFrame.AbsolutePosition.X + 15,DropdownLibrary.BaseFrame.AbsolutePosition.Y + 20)
+					Position = UDim2.fromOffset(DropdownLibrary.BaseFrame.AbsolutePosition.X + (DropdownLibrary.BaseFrame.AbsoluteSize.X / 2),DropdownLibrary.BaseFrame.AbsolutePosition.Y - 25)
 				})
 			else
 				if (tick() - CloseTick) > 0.35 then
@@ -1967,7 +1987,7 @@ function Library:CreateWindow(setup)
 		TFrame.BackgroundTransparency = 0.250
 		TFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		TFrame.BorderSizePixel = 0
-		TFrame.Size = UDim2.new(0.99, 0, 0, 30)
+		TFrame.Size = UDim2.new(0.99, 0, 0, Library.TabButtonHeight)
 		TFrame.ZIndex = 5
 
 		DropShadow.Name = "DropShadow"
@@ -2169,7 +2189,8 @@ function Library:CreateWindow(setup)
 			TextLabel.TextStrokeTransparency = 0.950
 			TextLabel.TextWrapped = true
 			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-
+			TextLabel.RichText = true
+			
 			local RootSkid = {};
 
 			function RootSkid:Value(Setup)
@@ -2201,7 +2222,7 @@ function Library:CreateWindow(setup)
 			ButtonBlock.BackgroundTransparency = 0.250
 			ButtonBlock.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			ButtonBlock.BorderSizePixel = 0
-			ButtonBlock.Size = UDim2.new(0.99000001, 0, 0, 35)
+			ButtonBlock.Size = UDim2.new(0.99000001, 0, 0, Library.ItemHeight)
 			ButtonBlock.ZIndex = 10
 
 			DropShadow.Name = "DropShadow"
@@ -2241,7 +2262,8 @@ function Library:CreateWindow(setup)
 			TextLabel.TextStrokeTransparency = 0.950
 			TextLabel.TextWrapped = true
 			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-
+			TextLabel.RichText = true
+			
 			Arrow.Name = "Arrow"
 			Arrow.Parent = ButtonBlock
 			Arrow.AnchorPoint = Vector2.new(1, 0.5)
@@ -2330,7 +2352,7 @@ function Library:CreateWindow(setup)
 			ToggleBlock.BackgroundTransparency = 0.250
 			ToggleBlock.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			ToggleBlock.BorderSizePixel = 0
-			ToggleBlock.Size = UDim2.new(0.99000001, 0, 0, 35)
+			ToggleBlock.Size = UDim2.new(0.99000001, 0, 0, Library.ItemHeight)
 			ToggleBlock.ZIndex = 10
 
 			DropShadow.Name = "DropShadow"
@@ -2351,7 +2373,8 @@ function Library:CreateWindow(setup)
 			UIStroke.Transparency = 0.850
 			UIStroke.Color = Color3.fromRGB(156, 156, 156)
 			UIStroke.Parent = ToggleBlock
-
+			
+			TextLabel.RichText = true
 			TextLabel.Parent = ToggleBlock
 			TextLabel.AnchorPoint = Vector2.new(0, 0.5)
 			TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -2392,7 +2415,7 @@ function Library:CreateWindow(setup)
 			ValueBlock.Name = "ValueBlock"
 			ValueBlock.Parent = Block
 			ValueBlock.AnchorPoint = Vector2.new(0.5, 0.5)
-			ValueBlock.BackgroundColor3 = Color3.fromRGB(0, 255, 255)
+			ValueBlock.BackgroundColor3 = Library.Colors.Hightlight
 			ValueBlock.BackgroundTransparency = 0.250
 			ValueBlock.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			ValueBlock.BorderSizePixel = 0
@@ -2482,7 +2505,7 @@ function Library:CreateWindow(setup)
 			TextBoxBlock.BackgroundTransparency = 0.250
 			TextBoxBlock.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			TextBoxBlock.BorderSizePixel = 0
-			TextBoxBlock.Size = UDim2.new(0.99000001, 0, 0, 35)
+			TextBoxBlock.Size = UDim2.new(0.99000001, 0, 0, Library.ItemHeight)
 			TextBoxBlock.ZIndex = 10
 
 			DropShadow.Name = "DropShadow"
@@ -2522,7 +2545,8 @@ function Library:CreateWindow(setup)
 			TextLabel.TextStrokeTransparency = 0.950
 			TextLabel.TextWrapped = true
 			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-
+			TextLabel.RichText = true
+			
 			Block.Name = "Block"
 			Block.Parent = TextBoxBlock
 			Block.AnchorPoint = Vector2.new(1, 0.5)
@@ -2652,7 +2676,8 @@ function Library:CreateWindow(setup)
 			UIStroke.Transparency = 0.850
 			UIStroke.Color = Color3.fromRGB(156, 156, 156)
 			UIStroke.Parent = ParagraphBlock
-
+			
+			Title.RichText = true
 			Title.Name = "Title"
 			Title.Parent = ParagraphBlock
 			Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -2765,7 +2790,7 @@ function Library:CreateWindow(setup)
 			SliderBlock.BackgroundTransparency = 0.250
 			SliderBlock.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			SliderBlock.BorderSizePixel = 0
-			SliderBlock.Size = UDim2.new(0.99000001, 0, 0, 35)
+			SliderBlock.Size = UDim2.new(0.99000001, 0, 0, Library.ItemHeight)
 			SliderBlock.ZIndex = 10
 
 			DropShadow.Name = "DropShadow"
@@ -2786,7 +2811,8 @@ function Library:CreateWindow(setup)
 			UIStroke.Transparency = 0.850
 			UIStroke.Color = Color3.fromRGB(156, 156, 156)
 			UIStroke.Parent = SliderBlock
-
+			
+			TextLabel.RichText = true
 			TextLabel.Parent = SliderBlock
 			TextLabel.AnchorPoint = Vector2.new(0, 0.5)
 			TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -2978,7 +3004,7 @@ function Library:CreateWindow(setup)
 			KeybindBlock.BackgroundTransparency = 0.250
 			KeybindBlock.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			KeybindBlock.BorderSizePixel = 0
-			KeybindBlock.Size = UDim2.new(0.99000001, 0, 0, 35)
+			KeybindBlock.Size = UDim2.new(0.99000001, 0, 0, Library.ItemHeight)
 			KeybindBlock.ZIndex = 10
 
 			DropShadow.Name = "DropShadow"
@@ -3018,7 +3044,8 @@ function Library:CreateWindow(setup)
 			TextLabel.TextStrokeTransparency = 0.950
 			TextLabel.TextWrapped = true
 			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-
+			TextLabel.RichText = true
+			
 			Block.Name = "Block"
 			Block.Parent = KeybindBlock
 			Block.AnchorPoint = Vector2.new(1, 0.5)
@@ -3178,7 +3205,7 @@ function Library:CreateWindow(setup)
 			DropdownBlock.BackgroundTransparency = 0.250
 			DropdownBlock.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			DropdownBlock.BorderSizePixel = 0
-			DropdownBlock.Size = UDim2.new(0.99000001, 0, 0, 35)
+			DropdownBlock.Size = UDim2.new(0.99000001, 0, 0, Library.ItemHeight)
 			DropdownBlock.ZIndex = 10
 
 			DropShadow.Name = "DropShadow"
@@ -3218,7 +3245,8 @@ function Library:CreateWindow(setup)
 			TextLabel.TextStrokeTransparency = 0.950
 			TextLabel.TextWrapped = true
 			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-
+			TextLabel.RichText = true
+			
 			Block.Name = "Block"
 			Block.Parent = DropdownBlock
 			Block.AnchorPoint = Vector2.new(1, 0.5)
@@ -3332,6 +3360,347 @@ function Library:CreateWindow(setup)
 		return Root;
 	end;
 
+	do
+		local Black = Instance.new("Frame")
+
+		Black.Name = "Black"
+		Black.Parent = MainFrame
+		Black.AnchorPoint = Vector2.new(0.5, 0.5)
+		Black.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+		Black.BackgroundTransparency = 1--0.550
+		Black.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Black.BorderSizePixel = 0
+		Black.Position = UDim2.new(0.5, 0, 0.5, 0)
+		Black.Size = UDim2.new(1, 0, 1, 0)
+		Black.ZIndex = -25 --250
+		Black.Active = true;
+		
+		local OpenBackground = function()
+			Library:Tween(Black,Library.TweenLibrary.SmallEffect,{
+				ZIndex = 250,
+				BackgroundTransparency = 0.55
+			})
+		end;
+		
+		local CloseBackground = function()
+			Library:Tween(Black,Library.TweenLibrary.SmallEffect,{
+				ZIndex = -25,
+				BackgroundTransparency = 1
+			})
+		end;
+		
+		function WindowLibrary:Dialog(setup)
+			
+			setup = setup or {};
+			
+			setup.Title = setup.Title or "Dialog";
+			setup.Buttons = setup.Buttons or {
+				{
+					Title = "YES",
+					Hightlight = true,
+					Callback = function()
+						
+					end,
+				},
+				{
+					Title = "NO",
+					Callback = function()
+
+					end,
+				}
+			}
+			
+			OpenBackground();
+			
+			local AntiTouch = false;
+			local Dialog = Instance.new("Frame")
+			local DropShadow = Instance.new("ImageLabel")
+			local UIStroke = Instance.new("UIStroke")
+			local UIGradient = Instance.new("UIGradient")
+			local Title = Instance.new("TextLabel")
+			local Buttons = Instance.new("Frame")
+			local UIListLayout = Instance.new("UIListLayout")
+
+			Dialog.Name = "Dialog"
+			Dialog.Parent = Black
+			Dialog.AnchorPoint = Vector2.new(0.5, 0.5)
+			Dialog.BackgroundColor3 = Library.Colors.Default
+			Dialog.BackgroundTransparency = 1
+			Dialog.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Dialog.BorderSizePixel = 0
+			Dialog.Position = UDim2.new(0.5, 0, 0.5, 0)
+			Dialog.Size = UDim2.new(0.1, 250, 0.1, 100)
+			Dialog.ZIndex = 265
+			Dialog.Active = true
+			
+			Library:Tween(Dialog,Library.TweenLibrary.SmallEffect,{
+				BackgroundTransparency = 0.250,
+				Size = UDim2.new(0, 250, 0, 100)
+			})
+			
+			DropShadow.Name = "DropShadow"
+			DropShadow.Parent = Dialog
+			DropShadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			DropShadow.BackgroundTransparency = 1.000
+			DropShadow.BorderColor3 = Color3.fromRGB(27, 42, 53)
+			DropShadow.Position = UDim2.new(0, -5, 0, -5)
+			DropShadow.Rotation = 0.010
+			DropShadow.Size = UDim2.new(1, 10, 1, 10)
+			DropShadow.ZIndex = 264
+			DropShadow.Image = "rbxassetid://297694300"
+			DropShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+			DropShadow.ImageTransparency = 1
+			DropShadow.ScaleType = Enum.ScaleType.Slice
+			DropShadow.SliceCenter = Rect.new(95, 103, 894, 902)
+			DropShadow.SliceScale = 0.050
+			
+			Library:Tween(DropShadow,Library.TweenLibrary.SmallEffect,{
+				ImageTransparency = 0.500
+			})
+			
+			UIStroke.Transparency = 1
+			UIStroke.Color = Color3.fromRGB(156, 156, 156)
+			UIStroke.Parent = Dialog
+			
+			Library:Tween(UIStroke,Library.TweenLibrary.SmallEffect,{
+				Transparency = 0.850
+			})
+			
+			UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(209, 209, 209))}
+			UIGradient.Rotation = 90
+			UIGradient.Parent = Dialog
+
+			Title.Name = "Title"
+			Title.Parent = Dialog
+			Title.AnchorPoint = Vector2.new(0.5, 0)
+			Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Title.BackgroundTransparency = 1.000
+			Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Title.BorderSizePixel = 0
+			Title.Position = UDim2.new(0.5, 0, 0.0649999976, 0)
+			Title.Size = UDim2.new(0.899999976, 0, 0.119999997, 0)
+			Title.ZIndex = 275
+			Title.Font = Enum.Font.Gotham
+			Title.Text = setup.Title;
+			Title.TextColor3 = Library.Colors.TextColor
+			Title.TextScaled = true
+			Title.TextSize = 14.000
+			Title.TextStrokeColor3 = Library.Colors.TextColor
+			Title.TextStrokeTransparency = 1
+			Title.TextWrapped = true
+			Title.TextTransparency = 1
+			Title.RichText = true
+			
+			Library:Tween(Title,Library.TweenLibrary.SmallEffect,{
+				TextStrokeTransparency = 0.950,
+				TextTransparency = 0
+			})
+			
+			Buttons.Name = "Buttons"
+			Buttons.Parent = Dialog
+			Buttons.AnchorPoint = Vector2.new(0.5, 1)
+			Buttons.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Buttons.BackgroundTransparency = 1.000
+			Buttons.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Buttons.BorderSizePixel = 0
+			Buttons.Position = UDim2.new(0.5, 0, 1, 0)
+			Buttons.Size = UDim2.new(0.899999976, 0, 0, 50)
+			Buttons.ZIndex = 275
+			
+			UIListLayout.Parent = Buttons
+			UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+			UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+			UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+			UIListLayout.Padding = UDim.new(0, 5)
+			UIListLayout.Wraps = true
+			
+			Dialog.MouseEnter:Connect(function()
+				AntiTouch = true
+			end)
+			
+			Dialog.MouseLeave:Connect(function()
+				AntiTouch = false
+			end)
+			
+			local ListFunctions = {};
+			local Thread = task.spawn(function()
+				while true do game:GetService('RunService').Heartbeat:Wait()
+					Library:Tween(Buttons,Library.TweenLibrary.SmallEffect,{
+						Size = UDim2.new(0,250,0,(UIListLayout.AbsoluteContentSize.Y + 25))
+					})
+					
+					Library:Tween(Dialog,Library.TweenLibrary.SmallEffect,{
+						Size = UDim2.new(0,250,0,Title.AbsoluteSize.Y + (Buttons.AbsoluteSize.Y) + 45)
+					})
+				end;
+			end)
+			
+			local Input;
+				
+			Input = Library.UserInputService.InputBegan:Connect(function(input , t)
+				if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+
+					if not AntiTouch then
+						
+						task.cancel(Thread);
+						CloseBackground()
+						table.foreach(ListFunctions,function(_,v) v() end)
+						Input:Disconnect()
+					end;
+				end;
+			end)
+			
+			table.insert(ListFunctions,function()
+				Library:Tween(Dialog,Library.TweenLibrary.SmallEffect,{
+					BackgroundTransparency = 1,
+					Size = UDim2.new(0.1, 250, 0.1, 100)
+				})
+				
+				Library:Tween(DropShadow,Library.TweenLibrary.SmallEffect,{
+					ImageTransparency = 1
+				})
+				
+				Library:Tween(UIStroke,Library.TweenLibrary.SmallEffect,{
+					Transparency = 1
+				})
+				
+				Library:Tween(Title,Library.TweenLibrary.SmallEffect,{
+					TextStrokeTransparency = 1,
+					TextTransparency = 1
+				})
+				
+				task.delay(1,function()
+					Dialog:Destroy()
+				end)
+			end)
+			
+			
+			for i,v in pairs(setup.Buttons) do
+				v.Callback = v.Callback or function() end;
+				v.Title = v.Title or "Button";
+				
+				local Frame = Instance.new("Frame")
+				local UIStroke = Instance.new("UIStroke")
+				local DropShadow = Instance.new("ImageLabel")
+				local TextLabel = Instance.new("TextLabel")
+				local Button = Instance.new("TextButton")
+
+				Frame.Parent = Buttons
+				Frame.BackgroundColor3 = Library.Colors.Default
+				Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Frame.BorderSizePixel = 0
+				Frame.Size = UDim2.new(0.469999999, 0, 0, 25)
+				Frame.ZIndex = 285
+				Frame.BackgroundTransparency = 1;
+				
+				Library:Tween(Frame,Library.TweenLibrary.SmallEffect,{
+					BackgroundTransparency = 0.15
+				})
+
+				UIStroke.Transparency = 1
+				UIStroke.Color = Color3.fromRGB(156, 156, 156)
+				UIStroke.Parent = Frame
+				
+				Library:Tween(UIStroke,Library.TweenLibrary.SmallEffect,{
+					Transparency = 0.850
+				})
+				
+				DropShadow.Name = "DropShadow"
+				DropShadow.Parent = Frame
+				DropShadow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				DropShadow.BackgroundTransparency = 1.000
+				DropShadow.BorderColor3 = Color3.fromRGB(27, 42, 53)
+				DropShadow.Position = UDim2.new(0, -5, 0, -5)
+				DropShadow.Rotation = 0.010
+				DropShadow.Size = UDim2.new(1, 10, 1, 10)
+				DropShadow.ZIndex = 284
+				DropShadow.Image = "rbxassetid://297694300"
+				DropShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+				DropShadow.ImageTransparency = 1
+				DropShadow.ScaleType = Enum.ScaleType.Slice
+				DropShadow.SliceCenter = Rect.new(95, 103, 894, 902)
+				DropShadow.SliceScale = 0.050
+				
+				Library:Tween(DropShadow,Library.TweenLibrary.SmallEffect,{
+					ImageTransparency = 0.500
+				})
+				
+				TextLabel.Parent = Frame
+				TextLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+				TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				TextLabel.BackgroundTransparency = 1.000
+				TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				TextLabel.BorderSizePixel = 0
+				TextLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+				TextLabel.Size = UDim2.new(0.99000001, 0, 0.550000012, 0)
+				TextLabel.ZIndex = 295
+				TextLabel.Font = Enum.Font.Gotham
+				TextLabel.Text = v.Title
+				TextLabel.TextColor3 = Color3.fromRGB(220, 224, 234)
+				TextLabel.TextScaled = true
+				TextLabel.TextSize = 14.000
+				TextLabel.TextStrokeColor3 = Color3.fromRGB(220, 224, 234)
+				TextLabel.TextStrokeTransparency = 1
+				TextLabel.TextWrapped = true
+				TextLabel.TextTransparency = 1
+				TextLabel.RichText = true
+				
+				Library:Tween(TextLabel,Library.TweenLibrary.SmallEffect,{
+					TextStrokeTransparency = 0.950,
+					TextTransparency = 0
+				})
+				
+				Button.Name = "Button"
+				Button.Parent = Frame
+				Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Button.BackgroundTransparency = 1.000
+				Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Button.BorderSizePixel = 0
+				Button.Size = UDim2.new(1, 0, 1, 0)
+				Button.ZIndex = 350
+				Button.Font = Enum.Font.SourceSans
+				Button.TextColor3 = Color3.fromRGB(0, 0, 0)
+				Button.TextSize = 14.000
+				Button.TextTransparency = 1.000
+				
+				table.insert(ListFunctions,function()
+					Library:Tween(TextLabel,Library.TweenLibrary.SmallEffect,{
+						TextStrokeTransparency = 1,
+						TextTransparency = 1
+					})
+					
+					Library:Tween(DropShadow,Library.TweenLibrary.SmallEffect,{
+						ImageTransparency = 1
+					})
+					
+					Library:Tween(UIStroke,Library.TweenLibrary.SmallEffect,{
+						Transparency = 1
+					})
+					
+					Library:Tween(Frame,Library.TweenLibrary.SmallEffect,{
+						BackgroundTransparency = 1
+					})
+				end)
+				
+				if v.Hightlight then
+					UIStroke.Color = Library.Colors.Hightlight;
+				end;
+				
+				Library:MakeDrop(Frame,UIStroke,Library.Colors.Hightlight)
+				
+				Button.MouseButton1Click:Connect(function()
+					Input:Disconnect()
+					task.cancel(Thread);
+					CloseBackground()
+					table.foreach(ListFunctions,function(_,v) v() end)
+					
+					v.Callback();
+				end)
+				
+			end;
+		end
+	end;
+	
 	function WindowLibrary:GetRoot()
 		return MainFrame;
 	end;
@@ -3351,13 +3720,25 @@ function Library:CreateWindow(setup)
 	end;
 
 	CloseButton.MouseButton1Click:Connect(function()
-		Library:Tween(MainFrame , Library.TweenLibrary.SmallEffect,{
-			Size = UDim2.fromScale(0,0),
-			Position = UDim2.fromScale(0.5,0.5)
-		}).Completed:Connect(function()
-			task.wait()
-			WindowLibrary:Destroy()
-		end)
+		WindowLibrary:Dialog({
+			Title = "Close this window?",
+			Buttons = {
+				{
+					Title = 'Yes',
+					Callback = function()
+						Library:Tween(MainFrame , Library.TweenLibrary.SmallEffect,{
+							Size = UDim2.fromScale(0,0),
+							Position = UDim2.fromScale(0.5,0.5)
+						}).Completed:Connect(function()
+							task.wait()
+							WindowLibrary:Destroy()
+						end)
+					end,
+				},{
+					Title = 'No',
+				}
+			}
+		})
 	end)
 
 	local ToggleButton = Library:InputButton(Ico);
