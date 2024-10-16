@@ -1,5 +1,5 @@
 local Library = {
-	Version = 'alib.0.1'	
+	Version = 'skid-alib.0.1'	
 };
 
 Library.Icons = {
