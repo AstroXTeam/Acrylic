@@ -34,6 +34,14 @@ Library.Theme:Houston()
 Library.Theme:Matcha()
 ```
 
+## Create Window
+```lua
+local Window = Library:CreateWindow({
+	Title = 'Acrylic',
+	Logo = "rbxassetid://7733920644",
+});
+```
+
 ## Create Dialogs
 
 ![Screenshot 2024-10-16 144720](https://github.com/user-attachments/assets/2fa97e73-8b2c-4b95-96bd-629c7376ea3a)
@@ -67,14 +75,6 @@ Window:Dialog({
 		}
 	}
 })
-```
-
-## Create Window
-```lua
-local Window = Library:CreateWindow({
-	Title = 'Acrylic',
-	Logo = "rbxassetid://7733920644",
-});
 ```
 
 ## Create Notification
