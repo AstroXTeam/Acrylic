@@ -227,10 +227,10 @@ Window:Resize(Library.SizeLibrary.Default) -- UDim2
 ```lua
 local Library = loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/3345-c-a-t-s-u-s/Acrylic/refs/heads/main/source'))();
 
---Library.Theme:Discord()
+--Library.Theme:Houston()
 
 local Window = Library:CreateWindow({
-	Title = 'Acrylic',
+	Title = 'Acrylic - '..Library.Version..' '..Library.TextEffect:AddColor('by 4lpaca',Color3.fromRGB(0, 255, 238)),
 	Logo = "rbxassetid://7733920644",
 });
 
