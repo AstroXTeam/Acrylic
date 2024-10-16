@@ -267,7 +267,7 @@ ExampleTab:AddDropdown({
 
 ExampleTab:AddParagraph({
 	Title = 'Paragraph',
-	Description = "Device Supported:\n[Mobile]: ✅\n[PC]: ✅\n[Console]: ✅\n\nExecutor Supported:\nSolara\nZolara\nSynapse Z\nWave\nTrigon\nCode X\nArceus X\nFluxus\nSeliware"
+	Description = "Device Supported:\n[Mobile]: ✅\n[PC]: ✅\n[Console]: ✅\n\nExecutor Supported:\nSolara\nZolara\nSynapse Z\nWave\nTrigon\nCode X\nArceus X\nFluxus"
 })
 
 SettingsTab:AddBlock('Settings')
