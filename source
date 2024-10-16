@@ -784,11 +784,11 @@ function render(source)
 			-- Line = line
 		}) 
 	end)
-	
-	
+
+
 	offLimits = {}
 	lines = {}
-	
+
 	local function autoEscape(s)
 		for i = 0, #s do
 			local char = string.sub(s, i, i)
@@ -816,7 +816,7 @@ function render(source)
 		-- s:gsub("&", "&amp;")
 		return s
 	end
-	
+
 	local function gfind(str, pattern)
 		return coroutine.wrap(function()
 			local start = 0
@@ -831,7 +831,7 @@ function render(source)
 			end
 		end)
 	end
-	
+
 	local function isOffLimits(index)
 		for _, v in next, offLimits do
 			if index >= v[1] and index <= v[2] then
@@ -840,7 +840,7 @@ function render(source)
 		end
 		return false
 	end
-	
+
 	local function highlightPattern(patternArray, color)
 		local step = 1
 		for _, pattern in next, patternArray do
@@ -859,7 +859,7 @@ function render(source)
 			end
 		end
 	end
-	
+
 	local function renderStrings()
 		local stringType
 		local stringEndType
@@ -901,7 +901,7 @@ function render(source)
 			skip = false
 		end
 	end
-	
+
 	local function renderComments()
 		local step = 1
 		for _, pattern in next, comments do
@@ -921,7 +921,7 @@ function render(source)
 			end
 		end
 	end
-	
+
 	highlightPattern(functions, Library.CodeColors.functionColor)
 	highlightPattern(numbers, Library.CodeColors.numberColor)
 	highlightPattern(operators, Library.CodeColors.operatorColor)
@@ -949,7 +949,7 @@ function render(source)
 			rawStr = ""
 			lastColor = nil
 			line += 1
-			
+
 			if line % 5 == 0 then
 				task.wait()
 			end
@@ -970,7 +970,7 @@ function render(source)
 			rawStr = rawStr .. char.Char
 		end
 	end
-	
+
 	return stack
 end
 
@@ -1176,7 +1176,7 @@ function Library:CreateWindow(setup)
 		Title.TextStrokeTransparency = 0.950
 		Title.TextWrapped = true
 		Title.RichText = true;
-		
+
 		TextBox.Parent = AuthFunction
 		TextBox.AnchorPoint = Vector2.new(0.5, 0.5)
 		TextBox.BackgroundColor3 = Library.Colors.Default
@@ -1460,14 +1460,14 @@ function Library:CreateWindow(setup)
 	Title.TextXAlignment = Enum.TextXAlignment.Left
 	Title.TextTransparency = 1
 	Title.RichText = true
-	
+
 	task.delay(1,function()
 		Library:Tween(Title , TweenInfo.new(1,Enum.EasingStyle.Quint),{
 			TextStrokeTransparency = 0.950,
 			TextTransparency = 0,
 		})
 	end)
-	
+
 	WindowControl.Name = "WindowControl"
 	WindowControl.Parent = Headers
 	WindowControl.AnchorPoint = Vector2.new(1, 0.5)
@@ -1524,7 +1524,7 @@ function Library:CreateWindow(setup)
 	CloseButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
 	CloseButton.ZIndex = 10;
 	CloseButton.HoverImage = "rbxassetid://9886659671";
-	
+
 	task.delay(1,function()
 		Library:Tween(MinimizeButton , TweenInfo.new(0.5,Enum.EasingStyle.Quint),{
 			Size = UDim2.new(1, 0, 1, 0),
@@ -1538,7 +1538,7 @@ function Library:CreateWindow(setup)
 			Size = UDim2.new(1, 0, 1, 0),
 		})
 	end)
-	
+
 	UICorner_3.CornerRadius = UDim.new(1, 0)
 	UICorner_3.Parent = CloseButton
 
@@ -1582,15 +1582,15 @@ function Library:CreateWindow(setup)
 	UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
 	UIListLayout_2.Padding = UDim.new(0, 1000)
-	
+
 	Library:Tween(UIListLayout_2 , TweenInfo.new(1.5,Enum.EasingStyle.Quint),{
 		Padding = UDim.new(0, 6)
 	})
-	
+
 	Library:Tween(DataScrollingFrame , TweenInfo.new(2,Enum.EasingStyle.Quint),{
 		Position = UDim2.new(0.5, 0, 0.5, 0)
 	})
-	
+
 	TabFrames.Name = "TabFrames"
 	TabFrames.Parent = Block
 	TabFrames.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -2083,11 +2083,11 @@ function Library:CreateWindow(setup)
 		UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 		UIListLayout.Padding = UDim.new(0, 1000)
-		
+
 		Library:Tween(UIListLayout , TweenInfo.new(1.5,Enum.EasingStyle.Quint),{
 			Padding = UDim.new(0, 7)
 		})
-		
+
 		UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
 			ScrollingFrame.CanvasSize = UDim2.fromOffset(0,UIListLayout.AbsoluteContentSize.Y)
 		end)
@@ -2672,7 +2672,7 @@ function Library:CreateWindow(setup)
 			Title.TextWrapped = true
 			Title.TextXAlignment = Enum.TextXAlignment.Left
 			Title.RichText = true
-			
+
 			Description.Name = "Description"
 			Description.Parent = ParagraphBlock
 			Description.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -2694,7 +2694,7 @@ function Library:CreateWindow(setup)
 			Description.TextXAlignment = Enum.TextXAlignment.Left
 			Description.TextYAlignment = Enum.TextYAlignment.Top
 			Description.RichText = true
-			
+
 			local UpdateBlock = function()
 				local TitleSize = 14;
 				local DescriptionSize = Library:GetTextSize(Description.Text,Description.TextSize,Description.Font).Y;
@@ -2826,7 +2826,7 @@ function Library:CreateWindow(setup)
 
 			Move.Name = "Move"
 			Move.Parent = Block
-			Move.AnchorPoint = Vector2.new(0.75, 0.5)
+			Move.AnchorPoint = Vector2.new(0.5, 0.5)
 			Move.BackgroundColor3 = Library.Colors.Hightlight
 			Move.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			Move.BorderSizePixel = 0
@@ -2853,7 +2853,7 @@ function Library:CreateWindow(setup)
 			ValueText.Size = UDim2.new(0.964999974, 0, 0.25, 0)
 			ValueText.ZIndex = 11
 			ValueText.Font = Enum.Font.Gotham
-			ValueText.Text = tostring(setup.Default) .. '/' .. tostring(setup.Max)
+			ValueText.Text = tostring(setup.Default)
 			ValueText.TextColor3 = Library.Colors.TextColor
 			ValueText.TextScaled = true
 			ValueText.TextSize = 14.000
@@ -2878,7 +2878,7 @@ function Library:CreateWindow(setup)
 			end;
 
 			Library:Tween(Move , Library.TweenLibrary.FastEffect,{
-				Position = UDim2.new(setup.Default / setup.Max, 0, 0.5, 0)
+				Position = UDim2.new((setup.Default - setup.Min) / (setup.Max - setup.Min), 0, 0.5, 0)
 			});
 
 			SliderBlock:GetPropertyChangedSignal('AbsoluteSize'):Connect(UpdateSize);
@@ -2889,12 +2889,13 @@ function Library:CreateWindow(setup)
 				local Main = ((setup.Max - setup.Min) * SizeScale) + setup.Min;
 				local Value = Rounding(Main,RoundNum)
 				local PositionX = UDim2.fromScale(SizeScale, 1)
+				local normalized = (Value - setup.Min) / (setup.Max - setup.Min)
 
 				Library:Tween(Move , Library.TweenLibrary.FastEffect,{
-					Position = UDim2.new(Value / setup.Max, 0, 0.5, 0)
+					Position = UDim2.new(normalized, 0, 0.5, 0)
 				});
 
-				ValueText.Text = tostring(Value) .. '/' .. tostring(setup.Max)
+				ValueText.Text = tostring(Value)
 
 				setup.Callback(Value)
 			end;
