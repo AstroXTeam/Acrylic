@@ -77,6 +77,17 @@ local Window = Library:CreateWindow({
 });
 ```
 
+## Create Notification
+
+![Screenshot 2024-10-16 161000](https://github.com/user-attachments/assets/068b0b09-1100-48d7-9eb0-61a1bc6708e5)
+```lua
+Window:Notify({
+	Title = 'Notification',
+	Description = "Hello, World\n"..Library:HightlightSource('print("Hello, World")'),
+	Duration = 5
+})
+```
+
 ## Create Block
 ```lua
 ExampleTab:AddBlock('Example')
