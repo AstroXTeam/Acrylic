@@ -747,6 +747,7 @@ function Library.CodeStyle:Default()
 	DefaultStyle()
 end;
 
+DefaultStyle()
 
 function Library.CodeStyle:RobloxStudio()
 	Library.CodeColors.backgroundColor = Color3.fromRGB(37, 37, 37)
@@ -778,23 +779,19 @@ end;
 
 local offLimits = {}
 
-
 -- Code from https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/highlight.lua --
 
 function render(source)
 	tableContents = {}
-
+	offLimits = {}
+	lines = {}
+	
 	string.gsub(source,'.',function(a)
 		table.insert(tableContents, {
 			Char = a,
 			Color = Library.CodeColors.defaultColor,
-			-- Line = line
 		}) 
 	end)
-
-
-	offLimits = {}
-	lines = {}
 
 	local function autoEscape(s)
 		for i = 0, #s do
@@ -970,6 +967,7 @@ function render(source)
 			if char.Color == lastColor then
 				lineStr = lineStr .. autoEscape(char.Char)
 			else
+			
 				lineStr = lineStr .. string.format('%s<font color="rgb(%d,%d,%d)">', lastColor and "</font>" or "", char.Color.R * 255, char.Color.G * 255, char.Color.B * 255)
 				lineStr = lineStr .. autoEscape(char.Char)
 				lastColor = char.Color
@@ -992,7 +990,7 @@ function Library:GetTextSize(text,fontSize,font)
 end;
 
 function Library:HightlightSource(source)
-	print(source)
+	
 	return table.concat(render(source),'\n')
 end;
 
