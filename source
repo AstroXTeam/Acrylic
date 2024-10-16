@@ -1,5 +1,5 @@
 local Library = {
-	Version = 'skid-alib.0.3',
+	Version = 'skid.0.4',
 	Loaded = true,
 	Discord = 'discord.gg/kfZKGeWyhc',
 	env = getgenv or getfenv,
@@ -641,7 +641,7 @@ function Library.Theme:Catppuccin()
 		Hightlight = Color3.fromRGB(201,165,245),
 		Default = Color3.fromRGB(30,31,47),
 		Disable = Color3.fromRGB(109,123,154,255),
-		TextColor = Color3.fromRGB(214,171,246),
+		TextColor = Color3.fromRGB(204, 204, 204),
 	}
 end;
 
@@ -776,6 +776,16 @@ function Library.CodeStyle:DarkLua()
 	Library.CodeColors.commentColor = Color3.fromRGB(102, 102, 102)
 	Library.CodeColors.lineNumberColor = Color3.fromRGB(255, 255, 255)
 	Library.CodeColors.genericColor = Color3.fromRGB(240, 240, 240)
+end;
+
+Library.TextEffect = {};
+
+function Library.TextEffect:AddColor(text : string,color : Color3)
+	return `<font color="rgb({math.round(color.R * 255)},{tostring(math.round(color.G * 255))},{math.round(color.B * 255)})">{text}</font>`
+end;
+
+function Library.TextEffect:Transparency(text : string,value : number)
+	return `<font transparency="{value}">{text}</font>`
 end;
 
 local offLimits = {}
@@ -1088,7 +1098,7 @@ function Library:CreateWindow(setup)
 	MainFrame.ClipsDescendants = true
 	MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 	MainFrame.Size = UDim2.fromScale(0,0);
-	
+
 	spawn(function()
 		while MainFrame do task.wait(1)
 			pcall(function()
@@ -1103,12 +1113,12 @@ function Library:CreateWindow(setup)
 					Library:Tween(MainFrame , Library.TweenLibrary.SmallEffect , {
 						BackgroundTransparency = 0.15
 					})
-				
+
 				end;
 			end);
 		end;
 	end)
-	
+
 	local BlurEle = Library.UIBlur.new(MainFrame,true);
 
 	DropShadow.Name = "DropShadow"
@@ -1153,7 +1163,9 @@ function Library:CreateWindow(setup)
 		end)
 
 		Library:Tween(MainFrame , Library.TweenLibrary.WindowChanged,{Size = Library.SizeLibrary.Auth})
-
+		
+		task.wait(1);
+		
 		local AuthFunction = Instance.new("Frame")
 		local Title = Instance.new("TextLabel")
 		local TextBox = Instance.new("TextBox")
@@ -1611,11 +1623,11 @@ function Library:CreateWindow(setup)
 
 	local LogUpdate = function()
 		local data = math.clamp((MainFrame.AbsoluteSize.X / 3.5) , 0, 235);
-		
+
 		Library:Tween(DataFrame,Library.TweenLibrary.BinEffect,{
 			Size = UDim2.new(0, data, 0, MainFrame.AbsoluteSize.Y - 33)
 		})
-		
+
 		Library:Tween(TabFrames,Library.TweenLibrary.BinEffect,{
 			Size = UDim2.new(0, (MainFrame.AbsoluteSize.X - (data + 10)), 0, MainFrame.AbsoluteSize.Y - 47)
 		})
@@ -3437,7 +3449,8 @@ function Library:CreateWindow(setup)
 			}
 
 			OpenBackground();
-
+			
+			local Already = false;
 			local AntiTouch = false;
 			local Dialog = Instance.new("Frame")
 			local DropShadow = Instance.new("ImageLabel")
@@ -3504,7 +3517,7 @@ function Library:CreateWindow(setup)
 			Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			Title.BorderSizePixel = 0
 			Title.Position = UDim2.new(0.5, 0, 0.0649999976, 0)
-			Title.Size = UDim2.new(0.899999976, 0, 0.119999997, 0)
+			Title.Size = UDim2.new(0.899999976, 0, 0, 15)
 			Title.ZIndex = 275
 			Title.Font = Enum.Font.Gotham
 			Title.Text = setup.Title;
@@ -3551,13 +3564,24 @@ function Library:CreateWindow(setup)
 			local ListFunctions = {};
 			local Thread = task.spawn(function()
 				while true do game:GetService('RunService').Heartbeat:Wait()
-					Library:Tween(Buttons,Library.TweenLibrary.SmallEffect,{
-						Size = UDim2.new(0,250,0,(UIListLayout.AbsoluteContentSize.Y + 25))
-					})
-
-					Library:Tween(Dialog,Library.TweenLibrary.SmallEffect,{
-						Size = UDim2.new(0.05,265,0.05,Title.AbsoluteSize.Y + (Buttons.AbsoluteSize.Y) + 45)
-					})
+					
+					if #setup.Buttons <= 6 then
+						Library:Tween(Buttons,Library.TweenLibrary.SmallEffect,{
+							Size = UDim2.new(0,260,0,(UIListLayout.AbsoluteContentSize.Y + 25))
+						})
+						
+						Library:Tween(Dialog,Library.TweenLibrary.SmallEffect,{
+							Size = UDim2.new(0.05,265,0.05,Title.AbsoluteSize.Y + (Buttons.AbsoluteSize.Y) + 45)
+						})
+					else
+						Library:Tween(Buttons,Library.TweenLibrary.SmallEffect,{
+							Size = UDim2.new(0,350,0,(UIListLayout.AbsoluteContentSize.Y + 25))
+						})
+						
+						Library:Tween(Dialog,Library.TweenLibrary.SmallEffect,{
+							Size = UDim2.new(0.05,395,0.05,Title.AbsoluteSize.Y + (Buttons.AbsoluteSize.Y) + 45)
+						})
+					end;
 				end;
 			end)
 
@@ -3577,6 +3601,8 @@ function Library:CreateWindow(setup)
 			end)
 
 			table.insert(ListFunctions,function()
+				Dialog.Active = false
+				
 				Library:Tween(Dialog,Library.TweenLibrary.SmallEffect,{
 					BackgroundTransparency = 1,
 					Size = UDim2.new(0.1, 250, 0.1, 100)
@@ -3618,7 +3644,13 @@ function Library:CreateWindow(setup)
 				Frame.Size = UDim2.new(0.469999999, 0, 0, 25)
 				Frame.ZIndex = 285
 				Frame.BackgroundTransparency = 1;
-
+				
+				if #setup.Buttons <= 6 then
+					Frame.Size = UDim2.new(0.469999999, 0, 0, 25)
+				else
+					Frame.Size = UDim2.new(0, 100, 0, 25)
+				end;
+				
 				Library:Tween(Frame,Library.TweenLibrary.SmallEffect,{
 					BackgroundTransparency = 0.15
 				})
@@ -3662,7 +3694,7 @@ function Library:CreateWindow(setup)
 				TextLabel.ZIndex = 295
 				TextLabel.Font = Enum.Font.Gotham
 				TextLabel.Text = v.Title
-				TextLabel.TextColor3 = Color3.fromRGB(220, 224, 234)
+				TextLabel.TextColor3 = Library.Colors.TextColor
 				TextLabel.TextScaled = true
 				TextLabel.TextSize = 14.000
 				TextLabel.TextStrokeColor3 = Color3.fromRGB(220, 224, 234)
@@ -3690,22 +3722,32 @@ function Library:CreateWindow(setup)
 				Button.TextTransparency = 1.000
 
 				table.insert(ListFunctions,function()
+				
 					Library:Tween(TextLabel,Library.TweenLibrary.SmallEffect,{
 						TextStrokeTransparency = 1,
-						TextTransparency = 1
+						TextTransparency = 1,
+						ZIndex = -10,
 					})
 
 					Library:Tween(DropShadow,Library.TweenLibrary.SmallEffect,{
-						ImageTransparency = 1
+						ImageTransparency = 1,
+						ZIndex = -10,
 					})
 
 					Library:Tween(UIStroke,Library.TweenLibrary.SmallEffect,{
-						Transparency = 1
+						Transparency = 1,
+				
 					})
 
 					Library:Tween(Frame,Library.TweenLibrary.SmallEffect,{
-						BackgroundTransparency = 1
+						BackgroundTransparency = 1,
+						ZIndex = -10,
 					})
+					
+					Button.ZIndex = -100;
+					Button.Visible = false;
+					Button.Active = false
+					
 				end)
 
 				if v.Hightlight then
@@ -3715,6 +3757,12 @@ function Library:CreateWindow(setup)
 				Library:MakeDrop(Frame,UIStroke,Library.Colors.Hightlight)
 
 				Button.MouseButton1Click:Connect(function()
+					if Already then
+						return
+					end
+					
+					Already = true;
+					
 					Input:Disconnect()
 					task.cancel(Thread);
 					CloseBackground()
@@ -3787,7 +3835,7 @@ function Library:CreateWindow(setup)
 			WindowLibrary.Status = 'Show'
 			Library:Tween(MainFrame , Library.TweenLibrary.SmallEffect,{
 				Size = setup.Size,
-				Position = UDim2.fromScale(0.5,0.5)
+				Position = WindowLibrary.SavedPosition or UDim2.fromScale(0.5,0.5)
 			})
 
 			MaxisizweButton.HoverImage = 'rbxassetid://7733992901'
@@ -3842,16 +3890,24 @@ function Library:CreateWindow(setup)
 	local startPos = nil;
 
 	local function updateInput(input)
-		Library:Tween(MainFrame , Library.TweenLibrary.WindowChangedFast,{
+		Library:Tween(MainFrame , Library.TweenLibrary.SmallEffect,{
 			Size = setup.Size,
+			Position = WindowLibrary.SavedPosition or UDim2.fromScale(0.5,0.5)
 		});
-
+		
+		
 		local delta = input.Position - dragStart;
 		local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
 			startPos.Y.Scale, startPos.Y.Offset + delta.Y);
-
-		WindowLibrary.FullScreen = false;
-
+		
+		if 	WindowLibrary.FullScreen then
+			WindowLibrary.FullScreen = false;
+			MainFrame.Position = position;
+			startPos = position
+		end;
+		
+		WindowLibrary.SavedPosition = position;
+		
 		game:GetService('TweenService'):Create(MainFrame, TweenInfo.new(dragSpeed), {Position = position}):Play()
 	end;
 
@@ -3893,7 +3949,7 @@ function Library:CreateWindow(setup)
 	Resize.Text = ""
 	Resize.TextColor3 = Color3.fromRGB(0, 0, 0)
 	Resize.TextSize = 14.000
-	
+
 	local NotificationBar = Instance.new("Frame")
 	local UIListLayout = Instance.new("UIListLayout")
 
@@ -3910,47 +3966,47 @@ function Library:CreateWindow(setup)
 	UIListLayout.Parent = NotificationBar
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	UIListLayout.Padding = UDim.new(0, 10)
-	
+
 	function WindowLibrary:Notify(setup)
 		setup = setup or {};
 		setup.Title = setup.Title or "Norification";
 		setup.Duration = setup.Duration or 5;
 		setup.Description = setup.Description or setup.Desc or "Description";
-		
-	
-		
+
+
+
 		local Notification = Instance.new("Frame")
 		local DropShadow = Instance.new("ImageLabel")
 		local Title = Instance.new("TextLabel")
 		local Close = Instance.new("TextButton")
 		local Message = Instance.new("TextLabel")
-		
+
 		local OpenAnimation = function()
 			Library:Tween(Notification,Library.TweenLibrary.SmallEffect,{
-			
+
 				BackgroundTransparency = 0.3
 			})
-			
+
 			Library:Tween(DropShadow,Library.TweenLibrary.SmallEffect,{
 				ImageTransparency = 0.500
 			})
-			
+
 			Library:Tween(Title,Library.TweenLibrary.SmallEffect,{
 				TextStrokeTransparency = 0.950,
 				TextTransparency = 0
 			})
-			
+
 			Library:Tween(Close,Library.TweenLibrary.SmallEffect,{
 				TextStrokeTransparency = 0.950,
 				TextTransparency = 0
 			})
-			
+
 			Library:Tween(Message,Library.TweenLibrary.SmallEffect,{
 				TextStrokeTransparency = 0.950,
 				TextTransparency = 0
 			})
 		end;
-		
+
 		local CloseAnimation = function()
 			Library:Tween(Notification,Library.TweenLibrary.SmallEffect,{
 				Size = UDim2.new(0, 0, 0, 0),
@@ -3976,10 +4032,10 @@ function Library:CreateWindow(setup)
 				TextTransparency = 1
 			})
 		end;
-		
+
 		Notification.Name = "Notification"
 		Notification.Parent = NotificationBar
-		Notification.BackgroundColor3 = Color3.fromRGB(32, 33, 36)
+		Notification.BackgroundColor3 = Library.Colors.Default
 		Notification.BackgroundTransparency = 1
 		Notification.BorderColor3 = Color3.fromRGB(27, 42, 53)
 		Notification.BorderSizePixel = 0
@@ -4012,7 +4068,7 @@ function Library:CreateWindow(setup)
 		Title.ZIndex = 0
 		Title.Font = Enum.Font.Gotham
 		Title.Text = setup.Title
-		Title.TextColor3 = Color3.fromRGB(220, 224, 234)
+		Title.TextColor3 = Library.Colors.TextColor
 		Title.TextScaled = true
 		Title.TextSize = 14.000
 		Title.TextStrokeColor3 = Color3.fromRGB(220, 224, 234)
@@ -4020,7 +4076,7 @@ function Library:CreateWindow(setup)
 		Title.TextWrapped = true
 		Title.TextTransparency = 1
 		Title.RichText = true
-		
+
 		Close.Name = "Close"
 		Close.Parent = Notification
 		Close.Active = false
@@ -4039,7 +4095,7 @@ function Library:CreateWindow(setup)
 		Close.TextStrokeColor3 = Color3.fromRGB(220, 224, 234)
 		Close.TextStrokeTransparency = 0.950
 		Close.TextTransparency = 1
-		
+
 		Message.Name = "Message"
 		Message.Parent = Notification
 		Message.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -4051,7 +4107,7 @@ function Library:CreateWindow(setup)
 		Message.ZIndex = 0
 		Message.Font = Enum.Font.Gotham
 		Message.Text = setup.Description
-		Message.TextColor3 = Color3.fromRGB(220, 224, 234)
+		Message.TextColor3 = Library.Colors.TextColor
 		Message.TextSize = 12.000
 		Message.TextStrokeColor3 = Color3.fromRGB(220, 224, 234)
 		Message.TextStrokeTransparency = 0.950
@@ -4060,20 +4116,20 @@ function Library:CreateWindow(setup)
 		Message.TextYAlignment = Enum.TextYAlignment.Top
 		Message.TextTransparency = 1
 		Message.RichText = true;
-		
+
 		local update = function()
-			
+
 			local size = Library:GetTextSize(Message.Text:gsub("<.->", ""),Message.TextSize,Message.Font)
-			
+
 			Library:Tween(Notification,Library.TweenLibrary.BinEffect,{
 				Size = UDim2.new(0, math.clamp(size.X,200,500), 0, 50 + size.Y),
 				BackgroundTransparency = 0.3
 			})
 		end;
-		
+
 		OpenAnimation()
 		update();
-		
+
 		local attr = false;
 		Close.MouseButton1Click:Connect(function()
 			attr = true
@@ -4083,23 +4139,23 @@ function Library:CreateWindow(setup)
 				Notification:Destroy()
 			end)
 		end);
-		
+
 		spawn(function()
 			update();
-			
+
 			task.wait(setup.Duration);
 			if attr then
 				return;
 			end;
-			
+
 			CloseAnimation()
-			
+
 			task.delay(0.25,function()
 				Notification:Destroy()
 			end)
 		end)
 	end;
-	
+
 	Resize.InputBegan:Connect(function(std)
 		if std.UserInputType == Enum.UserInputType.MouseButton1 or std.UserInputType == Enum.UserInputType.Touch then
 			IsHold = true
@@ -4129,7 +4185,8 @@ function Library:CreateWindow(setup)
 				Size = Offset,
 				Position = MainFrame.Position + plus,
 			})
-
+			
+			WindowLibrary.SavedPosition = MainFrame.Position + plus
 			setup.Size = Offset
 		end;
 
