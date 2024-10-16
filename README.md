@@ -34,6 +34,38 @@ Library.Theme:Houston()
 Library.Theme:Matcha()
 ```
 
+## Create Dialogs
+```lua
+Window:Dialog({
+	Title = "Dialog",
+	Buttons = {
+		{
+			Title = 'Huh?',
+			Callback = function()
+				
+			end,
+		},{
+			Title = 'KKK',
+			Callback = function()
+				
+			end,
+		},
+		{
+			Title = 'No?',
+			Callback = function()
+
+			end,
+		},
+		{
+			Title = 'Kak',
+			Callback = function()
+
+			end,
+		}
+	}
+})
+```
+
 ## Create Window
 ```lua
 local Window = Library:CreateWindow({
