@@ -2721,12 +2721,12 @@ function Library:CreateWindow(setup)
 			local RootSkid = {};
 
 			function RootSkid:Title(Setup)
-				Title.Text = setup
+				Title.Text = Setup
 				UpdateBlock()
 			end;
 
 			function RootSkid:Description(Setup)
-				Description.Text = setup
+				Description.Text = Setup
 				UpdateBlock()
 			end;
 
