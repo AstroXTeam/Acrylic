@@ -1101,7 +1101,7 @@ function Library:CreateWindow(setup)
 					})
 				else
 					Library:Tween(MainFrame , Library.TweenLibrary.SmallEffect , {
-						BackgroundTransparency = 0.25
+						BackgroundTransparency = 0.15
 					})
 				
 				end;
