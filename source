@@ -1,4 +1,6 @@
-local Library = {};
+local Library = {
+	Version = 'alib.0.1'	
+};
 
 Library.Icons = {
 	aperture = "rbxassetid://7733666258",
@@ -579,7 +581,7 @@ Library.SizeLibrary = {
 	Default = UDim2.new(0, 490,0, 350),
 	Auth = UDim2.new(0.05, 250,0.05, 125),
 	Max = UDim2.fromScale(1,1),
-	Loading = UDim2.new(0.05, 90,0.05, 90),
+	Loading = UDim2.new(0, 90,0, 90),
 	Close = UDim2.new(0.01, 25,0.01, 25)
 };
 
@@ -702,13 +704,289 @@ Library.TweenLibrary = {
 
 
 local _C,Source = pcall(function() return loadstring(game:HttpGetAsync('https://raw.githubusercontent.com/3345-c-a-t-s-u-s/neuron/refs/heads/main/plugin/blur.lua'))() end);
+local operators = {"^(function)[^%w_]", "^(local)[^%w_]", "^(if)[^%w_]", "^(for)[^%w_]", "^(while)[^%w_]", "^(then)[^%w_]", "^(do)[^%w_]", "^(else)[^%w_]", "^(elseif)[^%w_]", "^(return)[^%w_]", "^(end)[^%w_]", "^(continue)[^%w_]", "^(and)[^%w_]", "^(not)[^%w_]", "^(or)[^%w_]", "[^%w_](or)[^%w_]", "[^%w_](and)[^%w_]", "[^%w_](not)[^%w_]", "[^%w_](continue)[^%w_]", "[^%w_](function)[^%w_]", "[^%w_](local)[^%w_]", "[^%w_](if)[^%w_]", "[^%w_](for)[^%w_]", "[^%w_](while)[^%w_]", "[^%w_](then)[^%w_]", "[^%w_](do)[^%w_]", "[^%w_](else)[^%w_]", "[^%w_](elseif)[^%w_]", "[^%w_](return)[^%w_]", "[^%w_](end)[^%w_]"}
+local strings = {{"\"", "\""}, {"'", "'"}, {"%[%[", "%]%]", true}}
+local comments = {"%-%-%[%[[^%]%]]+%]?%]?", "(%-%-[^\n]+)"}
+local functions = {"[^%w_]([%a_][%a%d_]*)%s*%(", "^([%a_][%a%d_]*)%s*%(", "[:%.%(%[%p]([%a_][%a%d_]*)%s*%("}
+local numbers = {"[^%w_](%d+[eE]?%d*)", "[^%w_](%.%d+[eE]?%d*)", "[^%w_](%d+%.%d+[eE]?%d*)", "^(%d+[eE]?%d*)", "^(%.%d+[eE]?%d*)", "^(%d+%.%d+[eE]?%d*)"}
+local booleans = {"[^%w_](true)", "^(true)", "[^%w_](false)", "^(false)", "[^%w_](nil)", "^(nil)"}
+local objects = {"[^%w_:]([%a_][%a%d_]*):", "^([%a_][%a%d_]*):"}
+local other = {"[^_%s%w=>~<%-%+%*]", ">", "~", "<", "%-", "%+", "=", "%*"}
+local tableContents = {};
+local lines = {};
 
 Library.UIBlur = (_C and Source) or require(script:WaitForChild('UIBlur'));
 Library.UserInputService = game:GetService('UserInputService');
 Library.PerformanceMode = false;
+Library.CodeColors = {};
+
+local DefaultStyle = function()
+	Library.CodeColors.backgroundColor = Color3.fromRGB(40, 44, 52)
+	Library.CodeColors.operatorColor = Color3.fromRGB(187, 85, 255)
+	Library.CodeColors.functionColor = Color3.fromRGB(97, 175, 239)
+	Library.CodeColors.stringColor = Color3.fromRGB(152, 195, 121)
+	Library.CodeColors.numberColor = Color3.fromRGB(209, 154, 102)
+	Library.CodeColors.booleanColor = Color3.fromRGB(209, 154, 102)
+	Library.CodeColors.objectColor = Color3.fromRGB(229, 192, 123)
+	Library.CodeColors.defaultColor = Color3.fromRGB(224, 108, 117)
+	Library.CodeColors.commentColor = Color3.fromRGB(148, 148, 148)
+	Library.CodeColors.lineNumberColor = Color3.fromRGB(148, 148, 148)
+	Library.CodeColors.genericColor = Color3.fromRGB(240, 240, 240)
+end;
+
+Library.CodeStyle = {};
+
+function Library.CodeStyle:Default()
+	DefaultStyle()
+end;
+
+
+function Library.CodeStyle:RobloxStudio()
+	Library.CodeColors.backgroundColor = Color3.fromRGB(37, 37, 37)
+	Library.CodeColors.operatorColor = Color3.fromRGB(204, 204, 204)
+	Library.CodeColors.functionColor = Color3.fromRGB(248, 109, 124)
+	Library.CodeColors.stringColor = Color3.fromRGB(173, 241, 149)
+	Library.CodeColors.numberColor = Color3.fromRGB(255, 198, 0)
+	Library.CodeColors.booleanColor = Color3.fromRGB(255, 198, 0)
+	Library.CodeColors.objectColor = Color3.fromRGB(204, 204, 204)
+	Library.CodeColors.defaultColor = Color3.fromRGB(204, 204, 204)
+	Library.CodeColors.commentColor = Color3.fromRGB(102, 102, 102)
+	Library.CodeColors.lineNumberColor = Color3.fromRGB(255, 255, 255)
+	Library.CodeColors.genericColor = Color3.fromRGB(240, 240, 240)
+end;
+
+function Library.CodeStyle:DarkLua()
+	Library.CodeColors.backgroundColor = Color3.fromRGB(37, 37, 37)
+	Library.CodeColors.operatorColor = Color3.fromRGB(204, 204, 204)
+	Library.CodeColors.functionColor = Color3.fromRGB(248, 0, 37)
+	Library.CodeColors.stringColor = Color3.fromRGB(0, 241, 20)
+	Library.CodeColors.numberColor = Color3.fromRGB(255, 198, 0)
+	Library.CodeColors.booleanColor = Color3.fromRGB(255, 198, 0)
+	Library.CodeColors.objectColor = Color3.fromRGB(204, 204, 204)
+	Library.CodeColors.defaultColor = Color3.fromRGB(204, 204, 204)
+	Library.CodeColors.commentColor = Color3.fromRGB(102, 102, 102)
+	Library.CodeColors.lineNumberColor = Color3.fromRGB(255, 255, 255)
+	Library.CodeColors.genericColor = Color3.fromRGB(240, 240, 240)
+end;
+
+local offLimits = {}
+
+
+-- Code from https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/highlight.lua --
+
+function render(source)
+	tableContents = {}
+
+	string.gsub(source,'.',function(a)
+		table.insert(tableContents, {
+			Char = a,
+			Color = Library.CodeColors.defaultColor,
+			-- Line = line
+		}) 
+	end)
+	
+	
+	offLimits = {}
+	lines = {}
+	
+	local function autoEscape(s)
+		for i = 0, #s do
+			local char = string.sub(s, i, i)
+			if char == "<" then
+				s = string.format("%s%s%s", string.sub(s, 0, i - 1), "&lt;", string.sub(s, i + 1, -1))
+				i += 3
+			elseif char == ">" then
+				s = string.format("%s%s%s", string.sub(s, 0, i - 1), "&gt;", string.sub(s, i + 1, -1))
+				i += 3
+			elseif char == '"' then
+				s = string.format("%s%s%s", string.sub(s, 0, i - 1), "&quot;", string.sub(s, i + 1, -1))
+				i += 5
+			elseif char == "'" then
+				s = string.format("%s%s%s", string.sub(s, 0, i - 1), "&apos;", string.sub(s, i + 1, -1))
+				i += 5
+			elseif char == "&" then
+				s = string.format("%s%s%s", string.sub(s, 0, i - 1), "&amp;", string.sub(s, i + 1, -1))
+				i += 4
+			end
+		end
+		-- s:gsub("<", "&lt;")
+		-- s:gsub(">", "&gt;")
+		-- s:gsub('"', "&quot;")
+		-- s:gsub("'", "&apos;")
+		-- s:gsub("&", "&amp;")
+		return s
+	end
+	
+	local function gfind(str, pattern)
+		return coroutine.wrap(function()
+			local start = 0
+			while true do
+				local findStart, findEnd = str:find(pattern, start)
+				if findStart and findEnd ~= #str then
+					start = findEnd + 1
+					coroutine.yield(findStart, findEnd)
+				else
+					return
+				end
+			end
+		end)
+	end
+	
+	local function isOffLimits(index)
+		for _, v in next, offLimits do
+			if index >= v[1] and index <= v[2] then
+				return true
+			end
+		end
+		return false
+	end
+	
+	local function highlightPattern(patternArray, color)
+		local step = 1
+		for _, pattern in next, patternArray do
+			for findStart, findEnd in gfind(source, pattern) do
+				if step % 1000 == 0 then
+					task.wait()
+				end
+				step += 1
+				if not isOffLimits(findStart) and not isOffLimits(findEnd) then
+					for i = findStart, findEnd do
+						if tableContents[i] then
+							tableContents[i].Color = color
+						end
+					end
+				end
+			end
+		end
+	end
+	
+	local function renderStrings()
+		local stringType
+		local stringEndType
+		local ignoreBackslashes
+		local stringStart
+		local stringEnd
+		local offLimitsIndex
+		local skip = false
+
+		for i, char in next, tableContents do
+			if stringType then
+				char.Color = Library.CodeColors.stringColor
+				local possibleString = ""
+				for k = stringStart, i do
+					possibleString = possibleString .. tableContents[k].Char
+				end
+				if char.Char:match(stringEndType) and not not ignoreBackslashes or (possibleString:match("(\\*)" .. stringEndType .. "$") and #possibleString:match("(\\*)" .. stringEndType .. "$") % 2 == 0) then
+					skip = true
+					stringType = nil
+					stringEndType = nil
+					ignoreBackslashes = nil
+					stringEnd = i
+					offLimits[offLimitsIndex][2] = stringEnd
+				end
+			end
+			if not skip then
+				for _, v in next, strings do
+					if char.Char:match(v[1]) and not isOffLimits(i) then
+						stringType = v[1]
+						stringEndType = v[2]
+						ignoreBackslashes = v[3]
+						char.Color = Library.CodeColors.stringColor
+						stringStart = i
+						offLimitsIndex = #offLimits + 1
+						offLimits[offLimitsIndex] = {stringStart, math.huge}
+					end
+				end
+			end
+			skip = false
+		end
+	end
+	
+	local function renderComments()
+		local step = 1
+		for _, pattern in next, comments do
+			for commentStart, commentEnd in gfind(source, pattern) do
+				if step % 1000 == 0 then
+					task.wait()
+				end
+				step += 1
+				if not isOffLimits(commentStart) then
+					for i = commentStart, commentEnd do
+						table.insert(offLimits, {commentStart, commentEnd})
+						if tableContents[i] then
+							tableContents[i].Color = Library.CodeColors.commentColor
+						end
+					end
+				end
+			end
+		end
+	end
+	
+	highlightPattern(functions, Library.CodeColors.functionColor)
+	highlightPattern(numbers, Library.CodeColors.numberColor)
+	highlightPattern(operators, Library.CodeColors.operatorColor)
+	highlightPattern(objects, Library.CodeColors.objectColor)
+	highlightPattern(booleans, Library.CodeColors.booleanColor)
+	highlightPattern(other, Library.CodeColors.genericColor)
+	renderComments()
+	renderStrings()
+
+	local lastColor
+	local stack = {};
+	local lineStr = ""
+	local rawStr = ""
+	local largestX = 0
+	local line = 1
+
+	for i = 1, #tableContents + 1 do
+		local char = tableContents[i]
+		if i == #tableContents + 1 or char.Char == "\n" then
+			lineStr = lineStr .. (lastColor and "</font>" or "")
+
+			table.insert(stack,lineStr)
+
+			lineStr = ""
+			rawStr = ""
+			lastColor = nil
+			line += 1
+			
+			if line % 5 == 0 then
+				task.wait()
+			end
+		elseif char.Char == " " then
+			lineStr = lineStr .. char.Char
+			rawStr = rawStr .. char.Char
+		elseif char.Char == "\t" then
+			lineStr = lineStr .. string.rep(" ", 4)
+			rawStr = rawStr .. char.Char
+		else
+			if char.Color == lastColor then
+				lineStr = lineStr .. autoEscape(char.Char)
+			else
+				lineStr = lineStr .. string.format('%s<font color="rgb(%d,%d,%d)">', lastColor and "</font>" or "", char.Color.R * 255, char.Color.G * 255, char.Color.B * 255)
+				lineStr = lineStr .. autoEscape(char.Char)
+				lastColor = char.Color
+			end
+			rawStr = rawStr .. char.Char
+		end
+	end
+	
+	return stack
+end
+
+--------------------------------------------------------------------------------------------------------
+
+local tableContents = {};
+local offLimits = {}
+local lines = {}
 
 function Library:GetTextSize(text,fontSize,font)
 	return TextService:GetTextSize(text,fontSize,font,Vector2.new(math.huge,math.huge))	
+end;
+
+function Library:HightlightSource(source)
+	print(source)
+	return table.concat(render(source),'\n')
 end;
 
 function Library:InputButton(Frame :Frame)
@@ -897,7 +1175,8 @@ function Library:CreateWindow(setup)
 		Title.TextStrokeColor3 = Library.Colors.TextColor
 		Title.TextStrokeTransparency = 0.950
 		Title.TextWrapped = true
-
+		Title.RichText = true;
+		
 		TextBox.Parent = AuthFunction
 		TextBox.AnchorPoint = Vector2.new(0.5, 0.5)
 		TextBox.BackgroundColor3 = Library.Colors.Default
@@ -1145,7 +1424,7 @@ function Library:CreateWindow(setup)
 	Block.BackgroundTransparency = 1.000
 	Block.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Block.BorderSizePixel = 0
-	Block.Position = UDim2.new(-1.5, 0, 0.5, 0)
+	Block.Position = UDim2.new(0.5, 0, -2, 0)
 	Block.Size = UDim2.new(1, 0, 1, 0)
 
 	Library:Tween(Block , Library.TweenLibrary.WindowChanged,{Position = UDim2.new(0.5, 0, 0.5, 0)})
@@ -1179,7 +1458,16 @@ function Library:CreateWindow(setup)
 	Title.TextStrokeTransparency = 0.950
 	Title.TextWrapped = true
 	Title.TextXAlignment = Enum.TextXAlignment.Left
-
+	Title.TextTransparency = 1
+	Title.RichText = true
+	
+	task.delay(1,function()
+		Library:Tween(Title , TweenInfo.new(1,Enum.EasingStyle.Quint),{
+			TextStrokeTransparency = 0.950,
+			TextTransparency = 0,
+		})
+	end)
+	
 	WindowControl.Name = "WindowControl"
 	WindowControl.Parent = Headers
 	WindowControl.AnchorPoint = Vector2.new(1, 0.5)
@@ -1202,7 +1490,7 @@ function Library:CreateWindow(setup)
 	MinimizeButton.BackgroundColor3 = Color3.fromRGB(80, 255, 71)
 	MinimizeButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	MinimizeButton.BorderSizePixel = 0
-	MinimizeButton.Size = UDim2.new(1, 0, 1, 0)
+	MinimizeButton.Size = UDim2.new(0,0,0,0)
 	MinimizeButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
 	MinimizeButton.ZIndex = 10;
 	MinimizeButton.HoverImage = "rbxassetid://9886659276";
@@ -1217,7 +1505,7 @@ function Library:CreateWindow(setup)
 	MaxisizweButton.BackgroundColor3 = Color3.fromRGB(255, 249, 85)
 	MaxisizweButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	MaxisizweButton.BorderSizePixel = 0
-	MaxisizweButton.Size = UDim2.new(1, 0, 1, 0)
+	MaxisizweButton.Size = UDim2.new(0,0,0,0)
 	MaxisizweButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
 	MaxisizweButton.HoverImage = 'rbxassetid://7733992901';
 	MaxisizweButton.ZIndex = 10;
@@ -1232,11 +1520,25 @@ function Library:CreateWindow(setup)
 	CloseButton.BackgroundColor3 = Color3.fromRGB(255, 88, 91)
 	CloseButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	CloseButton.BorderSizePixel = 0
-	CloseButton.Size = UDim2.new(1, 0, 1, 0)
+	CloseButton.Size = UDim2.new(0,0,0,0)
 	CloseButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
 	CloseButton.ZIndex = 10;
 	CloseButton.HoverImage = "rbxassetid://9886659671";
+	
+	task.delay(1,function()
+		Library:Tween(MinimizeButton , TweenInfo.new(0.5,Enum.EasingStyle.Quint),{
+			Size = UDim2.new(1, 0, 1, 0),
+		})
 
+		Library:Tween(MaxisizweButton , TweenInfo.new(1,Enum.EasingStyle.Quint),{
+			Size = UDim2.new(1, 0, 1, 0),
+		})
+
+		Library:Tween(CloseButton , TweenInfo.new(1.5,Enum.EasingStyle.Quint),{
+			Size = UDim2.new(1, 0, 1, 0),
+		})
+	end)
+	
 	UICorner_3.CornerRadius = UDim.new(1, 0)
 	UICorner_3.Parent = CloseButton
 
@@ -1272,15 +1574,23 @@ function Library:CreateWindow(setup)
 	DataScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	DataScrollingFrame.BorderSizePixel = 0
 	DataScrollingFrame.ClipsDescendants = false
-	DataScrollingFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	DataScrollingFrame.Position = UDim2.new(0.5, 0, 1.75, 0)
 	DataScrollingFrame.Size = UDim2.new(0.99000001, 0, 0.980000019, 0)
 	DataScrollingFrame.ScrollBarThickness = 0
 
 	UIListLayout_2.Parent = DataScrollingFrame
 	UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
-	UIListLayout_2.Padding = UDim.new(0, 6)
-
+	UIListLayout_2.Padding = UDim.new(0, 1000)
+	
+	Library:Tween(UIListLayout_2 , TweenInfo.new(1.5,Enum.EasingStyle.Quint),{
+		Padding = UDim.new(0, 6)
+	})
+	
+	Library:Tween(DataScrollingFrame , TweenInfo.new(2,Enum.EasingStyle.Quint),{
+		Position = UDim2.new(0.5, 0, 0.5, 0)
+	})
+	
 	TabFrames.Name = "TabFrames"
 	TabFrames.Parent = Block
 	TabFrames.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -1752,7 +2062,7 @@ function Library:CreateWindow(setup)
 		TabCenterFrame.BackgroundTransparency = 1.000
 		TabCenterFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		TabCenterFrame.BorderSizePixel = 0
-		TabCenterFrame.Position = UDim2.new(0.5, 0, 0.500999987, 0)
+		TabCenterFrame.Position = UDim2.new(0.5, 0, 0.9, 0)
 		TabCenterFrame.Size = UDim2.new(0.99000001, 0, 0.99000001, 0)
 		TabCenterFrame.ZIndex = 6
 
@@ -1772,8 +2082,12 @@ function Library:CreateWindow(setup)
 		UIListLayout.Parent = ScrollingFrame
 		UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-		UIListLayout.Padding = UDim.new(0, 7)
-
+		UIListLayout.Padding = UDim.new(0, 1000)
+		
+		Library:Tween(UIListLayout , TweenInfo.new(1.5,Enum.EasingStyle.Quint),{
+			Padding = UDim.new(0, 7)
+		})
+		
 		UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
 			ScrollingFrame.CanvasSize = UDim2.fromOffset(0,UIListLayout.AbsoluteContentSize.Y)
 		end)
@@ -2357,7 +2671,8 @@ function Library:CreateWindow(setup)
 			Title.TextStrokeTransparency = 0.950
 			Title.TextWrapped = true
 			Title.TextXAlignment = Enum.TextXAlignment.Left
-
+			Title.RichText = true
+			
 			Description.Name = "Description"
 			Description.Parent = ParagraphBlock
 			Description.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -2378,7 +2693,8 @@ function Library:CreateWindow(setup)
 			Description.TextWrapped = true
 			Description.TextXAlignment = Enum.TextXAlignment.Left
 			Description.TextYAlignment = Enum.TextYAlignment.Top
-
+			Description.RichText = true
+			
 			local UpdateBlock = function()
 				local TitleSize = 14;
 				local DescriptionSize = Library:GetTextSize(Description.Text,Description.TextSize,Description.Font).Y;
@@ -2510,7 +2826,7 @@ function Library:CreateWindow(setup)
 
 			Move.Name = "Move"
 			Move.Parent = Block
-			Move.AnchorPoint = Vector2.new(0.5, 0.5)
+			Move.AnchorPoint = Vector2.new(0.75, 0.5)
 			Move.BackgroundColor3 = Library.Colors.Hightlight
 			Move.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			Move.BorderSizePixel = 0
