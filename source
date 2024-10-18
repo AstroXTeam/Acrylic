@@ -1,5 +1,5 @@
 local Library = {
-	Version = 'skid.0.4',
+	Version = 'skid.0.5',
 	Loaded = true,
 	Discord = 'discord.gg/kfZKGeWyhc',
 	env = getgenv or getfenv,
@@ -1163,9 +1163,9 @@ function Library:CreateWindow(setup)
 		end)
 
 		Library:Tween(MainFrame , Library.TweenLibrary.WindowChanged,{Size = Library.SizeLibrary.Auth})
-		
+
 		task.wait(1);
-		
+
 		local AuthFunction = Instance.new("Frame")
 		local Title = Instance.new("TextLabel")
 		local TextBox = Instance.new("TextBox")
@@ -3428,7 +3428,10 @@ function Library:CreateWindow(setup)
 		end;
 
 		function WindowLibrary:Dialog(setup)
-
+			if WindowLibrary.DialogStopTask then
+				WindowLibrary.DialogStopTask();
+			end;
+			
 			setup = setup or {};
 
 			setup.Title = setup.Title or "Dialog";
@@ -3449,7 +3452,7 @@ function Library:CreateWindow(setup)
 			}
 
 			OpenBackground();
-			
+
 			local Already = false;
 			local AntiTouch = false;
 			local Dialog = Instance.new("Frame")
@@ -3564,12 +3567,12 @@ function Library:CreateWindow(setup)
 			local ListFunctions = {};
 			local Thread = task.spawn(function()
 				while true do game:GetService('RunService').Heartbeat:Wait()
-					
+
 					if #setup.Buttons <= 6 then
 						Library:Tween(Buttons,Library.TweenLibrary.SmallEffect,{
 							Size = UDim2.new(0,260,0,(UIListLayout.AbsoluteContentSize.Y + 25))
 						})
-						
+
 						Library:Tween(Dialog,Library.TweenLibrary.SmallEffect,{
 							Size = UDim2.new(0.05,265,0.05,Title.AbsoluteSize.Y + (Buttons.AbsoluteSize.Y) + 45)
 						})
@@ -3577,7 +3580,7 @@ function Library:CreateWindow(setup)
 						Library:Tween(Buttons,Library.TweenLibrary.SmallEffect,{
 							Size = UDim2.new(0,350,0,(UIListLayout.AbsoluteContentSize.Y + 25))
 						})
-						
+
 						Library:Tween(Dialog,Library.TweenLibrary.SmallEffect,{
 							Size = UDim2.new(0.05,395,0.05,Title.AbsoluteSize.Y + (Buttons.AbsoluteSize.Y) + 45)
 						})
@@ -3602,7 +3605,7 @@ function Library:CreateWindow(setup)
 
 			table.insert(ListFunctions,function()
 				Dialog.Active = false
-				
+
 				Library:Tween(Dialog,Library.TweenLibrary.SmallEffect,{
 					BackgroundTransparency = 1,
 					Size = UDim2.new(0.1, 250, 0.1, 100)
@@ -3626,7 +3629,16 @@ function Library:CreateWindow(setup)
 				end)
 			end)
 
+			
+			WindowLibrary.DialogStopTask = function()
+				Already = true;
 
+				Input:Disconnect()
+				task.cancel(Thread);
+				CloseBackground()
+				table.foreach(ListFunctions,function(_,v) v() end)
+			end;
+			
 			for i,v in pairs(setup.Buttons) do
 				v.Callback = v.Callback or function() end;
 				v.Title = v.Title or "Button";
@@ -3644,13 +3656,13 @@ function Library:CreateWindow(setup)
 				Frame.Size = UDim2.new(0.469999999, 0, 0, 25)
 				Frame.ZIndex = 285
 				Frame.BackgroundTransparency = 1;
-				
+
 				if #setup.Buttons <= 6 then
 					Frame.Size = UDim2.new(0.469999999, 0, 0, 25)
 				else
 					Frame.Size = UDim2.new(0, 100, 0, 25)
 				end;
-				
+
 				Library:Tween(Frame,Library.TweenLibrary.SmallEffect,{
 					BackgroundTransparency = 0.15
 				})
@@ -3722,7 +3734,7 @@ function Library:CreateWindow(setup)
 				Button.TextTransparency = 1.000
 
 				table.insert(ListFunctions,function()
-				
+
 					Library:Tween(TextLabel,Library.TweenLibrary.SmallEffect,{
 						TextStrokeTransparency = 1,
 						TextTransparency = 1,
@@ -3736,18 +3748,18 @@ function Library:CreateWindow(setup)
 
 					Library:Tween(UIStroke,Library.TweenLibrary.SmallEffect,{
 						Transparency = 1,
-				
+
 					})
 
 					Library:Tween(Frame,Library.TweenLibrary.SmallEffect,{
 						BackgroundTransparency = 1,
 						ZIndex = -10,
 					})
-					
+
 					Button.ZIndex = -100;
 					Button.Visible = false;
 					Button.Active = false
-					
+
 				end)
 
 				if v.Hightlight then
@@ -3761,12 +3773,7 @@ function Library:CreateWindow(setup)
 						return
 					end
 					
-					Already = true;
-					
-					Input:Disconnect()
-					task.cancel(Thread);
-					CloseBackground()
-					table.foreach(ListFunctions,function(_,v) v() end)
+					WindowLibrary.DialogStopTask();
 
 					v.Callback();
 				end)
@@ -3894,20 +3901,20 @@ function Library:CreateWindow(setup)
 			Size = setup.Size,
 			Position = WindowLibrary.SavedPosition or UDim2.fromScale(0.5,0.5)
 		});
-		
-		
+
+
 		local delta = input.Position - dragStart;
 		local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
 			startPos.Y.Scale, startPos.Y.Offset + delta.Y);
-		
+
 		if 	WindowLibrary.FullScreen then
 			WindowLibrary.FullScreen = false;
 			MainFrame.Position = position;
 			startPos = position
 		end;
-		
+
 		WindowLibrary.SavedPosition = position;
-		
+
 		game:GetService('TweenService'):Create(MainFrame, TweenInfo.new(dragSpeed), {Position = position}):Play()
 	end;
 
@@ -4185,7 +4192,7 @@ function Library:CreateWindow(setup)
 				Size = Offset,
 				Position = MainFrame.Position + plus,
 			})
-			
+
 			WindowLibrary.SavedPosition = MainFrame.Position + plus
 			setup.Size = Offset
 		end;
