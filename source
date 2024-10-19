@@ -3388,6 +3388,10 @@ function Library:CreateWindow(setup)
 				setup.Callback(Setup)
 			end;
 
+			function RootSkid:SetValue(data)
+				setup.Values = data;
+			end;
+			
 			function RootSkid:Visible(value)
 				DropdownBlock.Visible = value;
 			end;
